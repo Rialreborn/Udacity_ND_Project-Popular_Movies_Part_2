@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.zane.popularmoviesapp.MainActivity">
+
+    <!--
+    Fragment for Movie List and Details
+    -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/mainBackground"
+        android:id="@+id/movie_frame_layout" />
+
+
+    <!--
+    For the bottom menu
+    Will update shared prefs
+    -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/menuRed"/>
+    <FrameLayout
+        android:id="@+id/menu_frame_layout"
+        android:layout_width="match_parent"
+        android:background="@color/mainBackground"
+        android:layout_height="56dp" />
+
+</LinearLayout>
