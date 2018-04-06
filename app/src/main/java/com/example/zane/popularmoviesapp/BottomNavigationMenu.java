@@ -1,6 +1,8 @@
 package com.example.zane.popularmoviesapp;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -18,6 +20,10 @@ public class BottomNavigationMenu extends Fragment {
 
     private MenuItem menuItem;
 
+    public static final String MOVIE_SORT_ORDER_KEY = "movie_sort_order";
+    public static final String MOVIE_SORT_ORDER_POPULAR = "popular";
+    private static final String MOVIE_SORT_ORDER_RATING = "top_rated";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +33,8 @@ public class BottomNavigationMenu extends Fragment {
         BottomNavigationView bottomNavigationView = rootView.findViewById(R.id.bottom_navigation_menu);
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
         final Menu menu = bottomNavigationView.getMenu();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        final SharedPreferences.Editor editor = sharedPreferences.edit();
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -34,10 +42,12 @@ public class BottomNavigationMenu extends Fragment {
                 switch (item.getItemId()) {
                     case R.id.popular_movies_menu_item:
                         menuItem = menu.getItem(0);
+                        editor.putString(MOVIE_SORT_ORDER_KEY, MOVIE_SORT_ORDER_POPULAR).apply();
                         break;
 
                     case R.id.highest_rated_movies_menu_item:
                         menuItem = menu.getItem(1);
+                        editor.putString(MOVIE_SORT_ORDER_KEY, MOVIE_SORT_ORDER_RATING).apply();
                         break;
                 }
                 menuItem.setChecked(true);

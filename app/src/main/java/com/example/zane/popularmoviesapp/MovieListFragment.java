@@ -1,9 +1,13 @@
 package com.example.zane.popularmoviesapp;
 
+import android.content.SharedPreferences;
 import android.support.v4.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.preference.ListPreference;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -24,12 +28,15 @@ import java.util.ArrayList;
  * Created by Zane on 03/04/2018.
  */
 
-public class MovieListFragment extends Fragment {
+public class MovieListFragment extends Fragment  {
 
     private int columnCount = 2;
     ArrayList<Movie> moviesList = null;
     RecyclerView mRecyclerView = null;
     TextView mApiKeyNeededTv = null;
+
+    SharedPreferences sharedPreferences;
+    String mMovieOrder;
 
     public MovieListFragment() {}
 
@@ -38,6 +45,15 @@ public class MovieListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        if (sharedPreferences != null) {
+            mMovieOrder = sharedPreferences.getString(BottomNavigationMenu.MOVIE_SORT_ORDER_KEY, BottomNavigationMenu.MOVIE_SORT_ORDER_POPULAR);
+        } else {
+            mMovieOrder = BottomNavigationMenu.MOVIE_SORT_ORDER_POPULAR;
+        }
+        System.out.println("MOVIE ORDER: " + mMovieOrder);
 
         final View rootView = inflater.inflate(R.layout.movie_list_fragment, container, false);
         mRecyclerView = rootView.findViewById(R.id.recycler_view);
@@ -59,6 +75,8 @@ public class MovieListFragment extends Fragment {
 
         return rootView;
     }
+
+
 
     public class LoadMovieData extends AsyncTask<URL, Void, ArrayList<Movie>> {
 
