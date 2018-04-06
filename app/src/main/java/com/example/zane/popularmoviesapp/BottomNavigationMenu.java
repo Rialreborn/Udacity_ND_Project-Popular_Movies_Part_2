@@ -33,8 +33,19 @@ public class BottomNavigationMenu extends Fragment {
         BottomNavigationView bottomNavigationView = rootView.findViewById(R.id.bottom_navigation_menu);
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
         final Menu menu = bottomNavigationView.getMenu();
+
+        // Set up Pref
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String currentSortOrder = sharedPreferences.getString(MOVIE_SORT_ORDER_KEY, MOVIE_SORT_ORDER_POPULAR);
+        if (currentSortOrder.equals(MOVIE_SORT_ORDER_RATING)) {
+            menuItem = menu.getItem(1);
+            int id = menuItem.getItemId();
+            bottomNavigationView.setSelectedItemId(id);
+        }
+
+        // Create Pref Editor
         final SharedPreferences.Editor editor = sharedPreferences.edit();
+
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -58,5 +69,4 @@ public class BottomNavigationMenu extends Fragment {
 
         return rootView;
     }
-
-    }
+}

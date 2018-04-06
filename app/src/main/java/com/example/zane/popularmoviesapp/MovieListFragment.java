@@ -5,8 +5,6 @@ import android.support.v4.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.preference.ListPreference;
-import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,15 +26,20 @@ import java.util.ArrayList;
  * Created by Zane on 03/04/2018.
  */
 
-public class MovieListFragment extends Fragment  {
+public class MovieListFragment extends Fragment {
+
+    SharedPreferences sharedPreferences;
+    SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;
+
+    String MOVIE_SORT_ORDER_KEY = BottomNavigationMenu.MOVIE_SORT_ORDER_KEY;
+    String MOVIE_SORT_ORDER_DEFAULT = BottomNavigationMenu.MOVIE_SORT_ORDER_POPULAR;
 
     private int columnCount = 2;
     ArrayList<Movie> moviesList = null;
     RecyclerView mRecyclerView = null;
     TextView mApiKeyNeededTv = null;
-
-    SharedPreferences sharedPreferences;
     String mMovieOrder;
+    URL mUrl;
 
     public MovieListFragment() {}
 
@@ -47,36 +50,56 @@ public class MovieListFragment extends Fragment  {
         super.onCreate(savedInstanceState);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-
-        if (sharedPreferences != null) {
-            mMovieOrder = sharedPreferences.getString(BottomNavigationMenu.MOVIE_SORT_ORDER_KEY, BottomNavigationMenu.MOVIE_SORT_ORDER_POPULAR);
+        if (sharedPreferences.contains(MOVIE_SORT_ORDER_KEY)) {
+            mMovieOrder = sharedPreferences.getString(MOVIE_SORT_ORDER_KEY, MOVIE_SORT_ORDER_DEFAULT);
         } else {
-            mMovieOrder = BottomNavigationMenu.MOVIE_SORT_ORDER_POPULAR;
+            mMovieOrder = MOVIE_SORT_ORDER_DEFAULT;
         }
-        System.out.println("MOVIE ORDER: " + mMovieOrder);
+
+        // Set up Listener for when Bottom Navigation Menu is changed
+        preferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                mMovieOrder = sharedPreferences.getString(key, BottomNavigationMenu.MOVIE_SORT_ORDER_POPULAR);
+                mUrl = NetworkUtils.buildMoviesUrl(mMovieOrder);
+            }
+        };
+        sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener);
+
+
+
 
         final View rootView = inflater.inflate(R.layout.movie_list_fragment, container, false);
         mRecyclerView = rootView.findViewById(R.id.recycler_view);
         mApiKeyNeededTv = rootView.findViewById(R.id.api_key_needed_tv);
 
         if (NetworkUtils.getApiKey() == null) {
-            mApiKeyNeededTv.setVisibility(View.VISIBLE);
-            mApiKeyNeededTv.setText(getString(R.string.api_key_needed));
-            mRecyclerView.setVisibility(View.GONE);
+            noApiKeyFound();
         } else {
 
             GridLayoutManager layoutManager = new GridLayoutManager(container.getContext(), columnCount);
             mRecyclerView.setLayoutManager(layoutManager);
             mRecyclerView.setHasFixedSize(true);
 
-            URL url = NetworkUtils.buildPopularMoviesUrl();
+            URL url = NetworkUtils.buildMoviesUrl(mMovieOrder);
             new LoadMovieData().execute(url);
         }
 
         return rootView;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
 
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
+    }
+
+    private void noApiKeyFound() {
+        mApiKeyNeededTv.setVisibility(View.VISIBLE);
+        mApiKeyNeededTv.setText(getString(R.string.api_key_needed));
+        mRecyclerView.setVisibility(View.GONE);
+    }
 
     public class LoadMovieData extends AsyncTask<URL, Void, ArrayList<Movie>> {
 

@@ -8,6 +8,7 @@
     <!-- Menu Colors -->
     <color name="menuBackground">#151212</color>
     <color name="menuRed">#E50914</color>
+    <color name="colorPrimaryRipple">#42E50914</color>
     <color name="menuText">#E50914</color>
     <color name="menuInactiveText">#831010</color>
 </resources>

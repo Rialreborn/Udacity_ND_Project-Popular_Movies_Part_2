@@ -16,7 +16,6 @@ import java.util.Scanner;
 public class NetworkUtils {
     private static final String BASE_URL = "https://api.themoviedb.org/3/movie/";
 
-    private static final String POPULAR = "popular";
     private static final String API = "api_key";
     private static final String API_KEY = null;
     private static final String LANGUAGE = "language";
@@ -26,12 +25,11 @@ public class NetworkUtils {
 
     // Image related
     private static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
-    private static final String IMAGE_SIZE_KEY = "size";
     private static final String IMAGE_SIZE = "w185";
 
 
-    public static URL buildPopularMoviesUrl() {
-        Uri builtUri = Uri.parse(BASE_URL + POPULAR).buildUpon()
+    public static URL buildMoviesUrl(String movieOrder) {
+        Uri builtUri = Uri.parse(BASE_URL + movieOrder).buildUpon()
                 .appendQueryParameter(API, API_KEY)
                 .appendQueryParameter(LANGUAGE, LAN_EN_US)
                 .appendQueryParameter(PAGE, PAGE_NUMBER)
