@@ -61,7 +61,7 @@ public class MovieListFragment extends Fragment {
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
                 mMovieOrder = sharedPreferences.getString(key, BottomNavigationMenu.MOVIE_SORT_ORDER_POPULAR);
-                mUrl = NetworkUtils.buildMoviesUrl(mMovieOrder);
+                loadMovieData();
             }
         };
         sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener);
@@ -81,8 +81,7 @@ public class MovieListFragment extends Fragment {
             mRecyclerView.setLayoutManager(layoutManager);
             mRecyclerView.setHasFixedSize(true);
 
-            URL url = NetworkUtils.buildMoviesUrl(mMovieOrder);
-            new LoadMovieData().execute(url);
+            loadMovieData();
         }
 
         return rootView;
@@ -101,7 +100,12 @@ public class MovieListFragment extends Fragment {
         mRecyclerView.setVisibility(View.GONE);
     }
 
-    public class LoadMovieData extends AsyncTask<URL, Void, ArrayList<Movie>> {
+    private void loadMovieData() {
+        URL url = NetworkUtils.buildMoviesUrl(mMovieOrder);
+        new LoadMovieDataAsync().execute(url);
+    }
+
+    public class LoadMovieDataAsync extends AsyncTask<URL, Void, ArrayList<Movie>> {
 
         @Override
         protected ArrayList<Movie> doInBackground(URL... urls) {

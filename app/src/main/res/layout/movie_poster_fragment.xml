@@ -10,5 +10,5 @@
         android:adjustViewBounds="true"
         android:id="@+id/rv_movie_list_image"
 
-        android:layout_margin="4dp"/>
+        android:layout_margin="2dp"/>
 </LinearLayout>

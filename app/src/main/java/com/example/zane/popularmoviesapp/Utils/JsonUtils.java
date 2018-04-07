@@ -38,7 +38,6 @@ public class JsonUtils {
             String plot = movieDetails.optString(PLOT, FAIL_TO_RETRIEVE);
             String releaseDate = movieDetails.optString(RELEASE_DATE, FAIL_TO_RETRIEVE);
             double userRating = movieDetails.optDouble(USER_RATING, 0.0);
-            System.out.println("Movie Title: " + movieTitle);
             movieArray.add(new Movie(movieTitle, imageURL, plot, userRating, releaseDate));
         }
 

@@ -3,6 +3,7 @@ package com.example.zane.popularmoviesapp;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Window;
 
 public class MainActivity extends AppCompatActivity {
 
