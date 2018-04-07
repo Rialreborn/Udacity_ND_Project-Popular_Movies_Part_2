@@ -2,5 +2,5 @@
     <string name="app_name">PopularMoviesApp</string>
     
 
-    <string name="api_key_needed">API Key in NetworkUtils currently set to Null. Please update!</string>
+    <string name="api_key_needed">API Key Needed! \n Please update NetworkUtils!</string>
 </resources>

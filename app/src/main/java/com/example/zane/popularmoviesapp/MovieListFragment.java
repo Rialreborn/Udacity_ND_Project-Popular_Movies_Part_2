@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.zane.popularmoviesapp.Utils.JsonUtils;
@@ -35,9 +36,10 @@ public class MovieListFragment extends Fragment {
     String MOVIE_SORT_ORDER_DEFAULT = BottomNavigationMenu.MOVIE_SORT_ORDER_POPULAR;
 
     private int columnCount = 2;
-    ArrayList<Movie> moviesList = null;
-    RecyclerView mRecyclerView = null;
-    TextView mApiKeyNeededTv = null;
+    ArrayList<Movie> moviesList;
+    RecyclerView mRecyclerView;
+    TextView mApiKeyNeededTv;
+    ProgressBar progressBar;
     String mMovieOrder;
     URL mUrl;
 
@@ -72,6 +74,7 @@ public class MovieListFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.movie_list_fragment, container, false);
         mRecyclerView = rootView.findViewById(R.id.recycler_view);
         mApiKeyNeededTv = rootView.findViewById(R.id.api_key_needed_tv);
+        progressBar = rootView.findViewById(R.id.progress_bar);
 
         if (NetworkUtils.getApiKey() == null) {
             noApiKeyFound();
@@ -105,7 +108,23 @@ public class MovieListFragment extends Fragment {
         new LoadMovieDataAsync().execute(url);
     }
 
+    private void showProgressBar() {
+        mRecyclerView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void hideProgressBar() {
+        progressBar.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.VISIBLE);
+    }
+
     public class LoadMovieDataAsync extends AsyncTask<URL, Void, ArrayList<Movie>> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            showProgressBar();
+        }
 
         @Override
         protected ArrayList<Movie> doInBackground(URL... urls) {
@@ -124,6 +143,8 @@ public class MovieListFragment extends Fragment {
         @Override
         protected void onPostExecute(ArrayList<Movie> movies) {
             super.onPostExecute(movies);
+
+            hideProgressBar();
 
             moviesList = movies;
             MovieListAdapter movieListAdapter = new MovieListAdapter(moviesList);

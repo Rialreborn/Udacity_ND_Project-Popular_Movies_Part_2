@@ -22,10 +22,12 @@
     For the bottom menu
     Will update shared prefs
     -->
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/menuRed"/>
+
     <FrameLayout
         android:id="@+id/menu_frame_layout"
         android:layout_width="match_parent"
