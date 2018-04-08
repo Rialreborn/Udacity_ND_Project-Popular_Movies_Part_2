@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,9 +25,14 @@ public class BottomNavigationMenu extends Fragment {
     public static final String MOVIE_SORT_ORDER_POPULAR = "popular";
     private static final String MOVIE_SORT_ORDER_RATING = "top_rated";
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        final FragmentManager fragmentManager = getFragmentManager();
+        final MovieListFragment movieListFragment;
 
         View rootView = inflater.inflate(R.layout.bottom_menu_layout, container, false);
 
@@ -54,11 +60,17 @@ public class BottomNavigationMenu extends Fragment {
                     case R.id.popular_movies_menu_item:
                         menuItem = menu.getItem(0);
                         editor.putString(MOVIE_SORT_ORDER_KEY, MOVIE_SORT_ORDER_POPULAR).apply();
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.movie_frame_layout, new MovieListFragment())
+                        .commit();
                         break;
 
                     case R.id.highest_rated_movies_menu_item:
                         menuItem = menu.getItem(1);
                         editor.putString(MOVIE_SORT_ORDER_KEY, MOVIE_SORT_ORDER_RATING).apply();
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.movie_frame_layout, new MovieListFragment())
+                        .commit();
                         break;
                 }
                 menuItem.setChecked(true);

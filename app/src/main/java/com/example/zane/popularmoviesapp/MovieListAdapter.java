@@ -1,5 +1,7 @@
 package com.example.zane.popularmoviesapp;
 
+import android.app.FragmentManager;
+import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -7,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.zane.popularmoviesapp.Utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
@@ -21,6 +24,17 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
 
     private ArrayList<Movie> mMovieArray;
     private int mNumberItems;
+    private OnItemClickListener listener;
+
+
+
+    public interface OnItemClickListener {
+        void onItemClick(View itemView, int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
 
     public MovieListAdapter(ArrayList<Movie> movieObjects) {
         mMovieArray = movieObjects;
@@ -44,7 +58,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
         return mMovieArray.size();
     }
 
-    public class MovieHolder extends RecyclerView.ViewHolder {
+    public class MovieHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public final View mView;
         public final ImageView mMoviePosterImage;
 
@@ -52,6 +66,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
             super(itemView);
             mView = itemView;
             mMoviePosterImage = itemView.findViewById(R.id.rv_movie_list_image);
+            mView.setOnClickListener(this);
         }
 
         void bind(int position) {
@@ -59,6 +74,13 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
             Uri image = NetworkUtils.buildImageURL(imageUrl);
 
             Picasso.with(mView.getContext()).load(image).into(mMoviePosterImage);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            listener.onItemClick(itemView, position);
+
         }
     }
 }
