@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.zane.popularmoviesapp.Model.Movie;
 import com.example.zane.popularmoviesapp.Utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
@@ -23,8 +24,7 @@ import java.util.ArrayList;
 public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.MovieHolder> {
 
     private ArrayList<Movie> mMovieArray;
-    private int mNumberItems;
-    private OnItemClickListener listener;
+    private OnItemClickListener mListener;
 
 
 
@@ -32,12 +32,9 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
         void onItemClick(View itemView, int position);
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.listener = listener;
-    }
-
-    public MovieListAdapter(ArrayList<Movie> movieObjects) {
+    public MovieListAdapter(ArrayList<Movie> movieObjects, OnItemClickListener listener) {
         mMovieArray = movieObjects;
+        mListener = listener;
     }
 
     @NonNull
@@ -79,8 +76,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
-            listener.onItemClick(itemView, position);
-
+            mListener.onItemClick(itemView, position);
         }
     }
 }

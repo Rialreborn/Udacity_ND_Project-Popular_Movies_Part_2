@@ -1,12 +1,11 @@
 package com.example.zane.popularmoviesapp;
 
-import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v4.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +16,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.zane.popularmoviesapp.Model.Movie;
+import com.example.zane.popularmoviesapp.Utils.Constants;
 import com.example.zane.popularmoviesapp.Utils.JsonUtils;
 import com.example.zane.popularmoviesapp.Utils.NetworkUtils;
 
@@ -34,17 +35,12 @@ public class MovieListFragment extends Fragment {
 
     SharedPreferences sharedPreferences;
 
-    String MOVIE_SORT_ORDER_KEY = BottomNavigationMenu.MOVIE_SORT_ORDER_KEY;
-    String MOVIE_SORT_ORDER_DEFAULT = BottomNavigationMenu.MOVIE_SORT_ORDER_POPULAR;
-
     private int columnCount = 3;
     ArrayList<Movie> moviesList;
     RecyclerView mRecyclerView;
     TextView mApiKeyNeededTv;
     ProgressBar progressBar;
     String mMovieOrder;
-    URL mUrl;
-    Context context;
 
     public MovieListFragment() {}
 
@@ -55,27 +51,21 @@ public class MovieListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        if (sharedPreferences.contains(MOVIE_SORT_ORDER_KEY)) {
-            mMovieOrder = sharedPreferences.getString(MOVIE_SORT_ORDER_KEY, MOVIE_SORT_ORDER_DEFAULT);
-        } else {
-            mMovieOrder = MOVIE_SORT_ORDER_DEFAULT;
-        }
+            mMovieOrder = sharedPreferences.getString(Constants.MOVIE_SORT_ORDER_KEY, Constants.MOVIE_SORT_ORDER_POPULAR);
+
 
         final View rootView = inflater.inflate(R.layout.movie_list_fragment, container, false);
         mRecyclerView = rootView.findViewById(R.id.recycler_view);
         mApiKeyNeededTv = rootView.findViewById(R.id.api_key_needed_tv);
         progressBar = rootView.findViewById(R.id.progress_bar);
 
-        context = rootView.getContext();
 
-        if (NetworkUtils.getApiKey() == null) {
+        if (Constants.API_KEY == null) {
             noApiKeyFound();
         } else {
-
             GridLayoutManager layoutManager = new GridLayoutManager(container.getContext(), columnCount);
             mRecyclerView.setLayoutManager(layoutManager);
             mRecyclerView.setHasFixedSize(true);
-
             loadMovieData();
         }
 
@@ -132,18 +122,13 @@ public class MovieListFragment extends Fragment {
             hideProgressBar();
 
             moviesList = movies;
-            MovieListAdapter movieListAdapter = new MovieListAdapter(moviesList);
-            movieListAdapter.setOnItemClickListener(new MovieListAdapter.OnItemClickListener() {
+            MovieListAdapter movieListAdapter = new MovieListAdapter(moviesList, new MovieListAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View itemView, int position) {
-                    FragmentManager fragmentManager = getFragmentManager();
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.movie_frame_layout, new MovieDetail())
-                    .commit();
-                    // Create intent here
-
+                    Toast.makeText(getContext(), "CLICKED ITEM: " + position, Toast.LENGTH_SHORT).show();
                 }
             });
+
             mRecyclerView.setAdapter(movieListAdapter);
         }
     }

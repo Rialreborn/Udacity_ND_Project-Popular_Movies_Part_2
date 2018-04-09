@@ -1,4 +1,4 @@
-package com.example.zane.popularmoviesapp;
+package com.example.zane.popularmoviesapp.Model;
 
 /**
  * Created by Zane on 03/04/2018.

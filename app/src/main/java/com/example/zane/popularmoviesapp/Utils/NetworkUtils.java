@@ -14,25 +14,14 @@ import java.util.Scanner;
  */
 
 public class NetworkUtils {
-    private static final String BASE_URL = "https://api.themoviedb.org/3/movie/";
 
-    private static final String API = "api_key";
-    private static final String API_KEY = null;
-    private static final String LANGUAGE = "language";
-    private static final String LAN_EN_US = "en-US";
-    private static final String PAGE = "page";
-    private static final String PAGE_NUMBER = "1";
-
-    // Image related
-    private static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
-    private static final String IMAGE_SIZE = "w185";
 
 
     public static URL buildMoviesUrl(String movieOrder) {
-        Uri builtUri = Uri.parse(BASE_URL + movieOrder).buildUpon()
-                .appendQueryParameter(API, API_KEY)
-                .appendQueryParameter(LANGUAGE, LAN_EN_US)
-                .appendQueryParameter(PAGE, PAGE_NUMBER)
+        Uri builtUri = Uri.parse(Constants.BASE_URL + movieOrder).buildUpon()
+                .appendQueryParameter(Constants.API, Constants.API_KEY)
+                .appendQueryParameter(Constants.LANGUAGE, Constants.LAN_EN_US)
+                .appendQueryParameter(Constants.PAGE, Constants.PAGE_NUMBER)
                 .build();
 
         URL url = null;
@@ -47,7 +36,7 @@ public class NetworkUtils {
     }
 
     public static Uri buildImageURL(String imageUrl){
-        Uri builtUri = Uri.parse(IMAGE_BASE_URL + IMAGE_SIZE + imageUrl);
+        Uri builtUri = Uri.parse(Constants.IMAGE_BASE_URL + Constants.IMAGE_SIZE + imageUrl);
 
         return builtUri;
 
@@ -72,7 +61,4 @@ public class NetworkUtils {
         }
     }
 
-    public static String getApiKey() {
-        return API_KEY;
-    }
 }

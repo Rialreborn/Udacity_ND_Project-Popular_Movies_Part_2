@@ -11,9 +11,9 @@ import android.view.ViewGroup;
  * Created by Zane on 08/04/2018.
  */
 
-public class MovieDetail extends Fragment {
+public class MovieDetailActivity extends Fragment {
 
-    public MovieDetail() {}
+    public MovieDetailActivity() {}
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {

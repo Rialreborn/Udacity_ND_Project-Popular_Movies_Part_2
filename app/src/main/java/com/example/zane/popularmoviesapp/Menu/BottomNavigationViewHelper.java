@@ -1,4 +1,4 @@
-package com.example.zane.popularmoviesapp;
+package com.example.zane.popularmoviesapp.Menu;
 
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.internal.BottomNavigationMenuView;
