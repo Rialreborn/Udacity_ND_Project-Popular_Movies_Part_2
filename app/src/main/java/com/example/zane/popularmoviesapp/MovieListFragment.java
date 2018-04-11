@@ -122,10 +122,20 @@ public class MovieListFragment extends Fragment {
             hideProgressBar();
 
             moviesList = movies;
+
+
             MovieListAdapter movieListAdapter = new MovieListAdapter(moviesList, new MovieListAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View itemView, int position) {
-                    Toast.makeText(getContext(), "CLICKED ITEM: " + position, Toast.LENGTH_SHORT).show();
+                    Movie movie = moviesList.get(position);
+                    Intent intent = new Intent(getContext(), MovieDetailActivity.class);
+                    intent.putExtra(Constants.INTENT_TITLE, movie.getTitle())
+                    .putExtra(Constants.INTENT_IMAGE_URL, movie.getImageUrl())
+                    .putExtra(Constants.INTENT_USER_RATING, movie.getUserRating())
+                    .putExtra(Constants.INTENT_RELEASE_DATE, movie.getReleaseDate())
+                    .putExtra(Constants.INTENT_PLOT, movie.getPlot())
+                    .putExtra(Constants.INTENT_BACKDROP_URL, movie.getMovieBackdrop());
+                    startActivity(intent);
                 }
             });
 

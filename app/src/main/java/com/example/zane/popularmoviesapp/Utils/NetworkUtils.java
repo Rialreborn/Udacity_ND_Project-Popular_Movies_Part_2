@@ -15,13 +15,27 @@ import java.util.Scanner;
 
 public class NetworkUtils {
 
+    // Constants
+    public static final String BASE_URL = "https://api.themoviedb.org/3/movie/";
+    public static final String API = "api_key";
+
+    public static final String LANGUAGE = "language";
+    public static final String LAN_EN_US = "en-US";
+    public static final String PAGE = "page";
+    public static final String PAGE_NUMBER = "1";
+
+    // Image related
+    public static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
+    public static final String IMAGE_SIZE_W185 = "w185";
+    public static final String IMAGE_SIZE_W342 = "w342";
+
 
 
     public static URL buildMoviesUrl(String movieOrder) {
-        Uri builtUri = Uri.parse(Constants.BASE_URL + movieOrder).buildUpon()
-                .appendQueryParameter(Constants.API, Constants.API_KEY)
-                .appendQueryParameter(Constants.LANGUAGE, Constants.LAN_EN_US)
-                .appendQueryParameter(Constants.PAGE, Constants.PAGE_NUMBER)
+        Uri builtUri = Uri.parse(BASE_URL + movieOrder).buildUpon()
+                .appendQueryParameter(API, Constants.API_KEY)
+                .appendQueryParameter(LANGUAGE, LAN_EN_US)
+                .appendQueryParameter(PAGE, PAGE_NUMBER)
                 .build();
 
         URL url = null;
@@ -36,10 +50,15 @@ public class NetworkUtils {
     }
 
     public static Uri buildImageURL(String imageUrl){
-        Uri builtUri = Uri.parse(Constants.IMAGE_BASE_URL + Constants.IMAGE_SIZE + imageUrl);
+        Uri builtUri = Uri.parse(IMAGE_BASE_URL + IMAGE_SIZE_W185 + imageUrl);
 
         return builtUri;
+    }
 
+    public static Uri buildMovieBackdropURL(String imageUrl){
+        Uri builtUri = Uri.parse(IMAGE_BASE_URL + IMAGE_SIZE_W342 + imageUrl);
+
+        return builtUri;
     }
 
     public static String getResponseFromHttpUrl(URL url) throws IOException {

@@ -11,13 +11,15 @@ public class Movie {
     private String mPlot;
     private double mUserRating;
     private String mReleaseDate;
+    private String mMovieBackdrop;
 
-    public Movie(String title, String imageUrl, String plot, double userRating, String releaseDate) {
+    public Movie(String title, String imageUrl, String plot, double userRating, String releaseDate, String movieBackdrop) {
         this.mTitle = title;
         this.mImageUrl = imageUrl;
         this.mPlot = plot;
         this.mUserRating = userRating;
         this.mReleaseDate = releaseDate;
+        this.mMovieBackdrop = movieBackdrop;
     }
 
     public String getTitle() {
@@ -39,4 +41,6 @@ public class Movie {
     public String getReleaseDate() {
         return mReleaseDate;
     }
+
+    public String getMovieBackdrop() {return  mMovieBackdrop; }
 }

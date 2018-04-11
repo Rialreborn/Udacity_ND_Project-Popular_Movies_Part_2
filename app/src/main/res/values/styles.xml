@@ -1,10 +1,9 @@
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.Design.NoActionBar" android:windowActionBar="false">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar" android:windowActionBar="false">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
-
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorControlHighlight">@color/colorPrimaryRipple</item>
@@ -14,7 +13,10 @@
     <!-- Menu Active Text -->
     <style name="menuActiveText" parent="android:Widget.TextView">
         <item name="android:textStyle">bold</item>
+    </style>
 
+    <style name="movieDetailBodyText" parent="Base.TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">24sp</item>
     </style>
 
 </resources>

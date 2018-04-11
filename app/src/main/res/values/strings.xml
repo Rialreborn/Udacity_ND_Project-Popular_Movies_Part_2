@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">PopularMoviesApp</string>
-    
+
+
 
     <string name="api_key_needed">API Key Needed! \n Please update NetworkUtils!</string>
+    <string name="detail_intent_error">Error loading movie details</string>
+
+    <!-- Movie Details -->
+    <string name="movie_details_user_rating">Rating</string>
+    <string name="movie_details_release_date">Release Date</string>
+    <string name="movie_details_backdrop_content_description">Movie Backdrop</string>
 </resources>

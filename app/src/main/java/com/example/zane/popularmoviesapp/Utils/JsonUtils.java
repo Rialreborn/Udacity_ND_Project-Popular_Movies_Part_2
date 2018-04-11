@@ -31,7 +31,8 @@ public class JsonUtils {
             String plot = movieDetails.optString(Constants.PLOT, Constants.FAIL_TO_RETRIEVE);
             String releaseDate = movieDetails.optString(Constants.RELEASE_DATE, Constants.FAIL_TO_RETRIEVE);
             double userRating = movieDetails.optDouble(Constants.USER_RATING, 0.0);
-            movieArray.add(new Movie(movieTitle, imageURL, plot, userRating, releaseDate));
+            String movieBackdrop = movieDetails.optString(Constants.BACKDROP_POSTER, Constants.FAIL_TO_RETRIEVE);
+            movieArray.add(new Movie(movieTitle, imageURL, plot, userRating, releaseDate, movieBackdrop));
         }
 
         return movieArray;

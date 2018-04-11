@@ -5,21 +5,9 @@ package com.example.zane.popularmoviesapp.Utils;
  */
 
 public class Constants {
-    public static final String SELECTED_MOVIE = "movie";
 
-
-    // Network Utils
-    public static final String BASE_URL = "https://api.themoviedb.org/3/movie/";
-    public static final String API = "api_key";
+    // ENTER API KEY HERE
     public static final String API_KEY = null;
-    public static final String LANGUAGE = "language";
-    public static final String LAN_EN_US = "en-US";
-    public static final String PAGE = "page";
-    public static final String PAGE_NUMBER = "1";
-
-    // Image related
-    public static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
-    public static final String IMAGE_SIZE = "w185";
 
     // Sort Order
     public static final String MOVIE_SORT_ORDER_KEY = "movie_sort_order";
@@ -29,10 +17,19 @@ public class Constants {
     // JSON
     public static final String TITLE = "original_title";
     public static final String POSTER_URL = "poster_path";
+    public static final String BACKDROP_POSTER = "backdrop_path";
     public static final String PLOT = "overview";
     public static final String USER_RATING = "vote_average";
     public static final String RELEASE_DATE = "release_date";
     public static final String POPULAR = "popular";
     public static final String JSON_RESULTS = "results";
     public static final String FAIL_TO_RETRIEVE = "Failed to Retrieve";
+
+    // Detail Intent
+    public static final String INTENT_TITLE = "title";
+    public static final String INTENT_IMAGE_URL = "image_url";
+    public static final String INTENT_USER_RATING = "user_rating";
+    public static final String INTENT_RELEASE_DATE = "release_date";
+    public static final String INTENT_PLOT = "plot";
+    public static final String INTENT_BACKDROP_URL = "backdrop_url";
 }
