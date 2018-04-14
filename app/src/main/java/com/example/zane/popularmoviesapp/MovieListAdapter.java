@@ -27,11 +27,6 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
     private OnItemClickListener mListener;
 
 
-
-    public interface OnItemClickListener {
-        void onItemClick(View itemView, int position);
-    }
-
     public MovieListAdapter(ArrayList<Movie> movieObjects, OnItemClickListener listener) {
         mMovieArray = movieObjects;
         mListener = listener;
@@ -55,7 +50,11 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
         return mMovieArray.size();
     }
 
-    public class MovieHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public interface OnItemClickListener {
+        void onItemClick(View itemView, int position);
+    }
+
+    public class MovieHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final View mView;
         public final ImageView mMoviePosterImage;
 

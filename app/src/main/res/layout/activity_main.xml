@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/linear_layout"
+
     android:orientation="vertical"
     tools:context="com.example.zane.popularmoviesapp.MainActivity">
 
@@ -12,28 +12,48 @@
     <!--
     Fragment for Movie List and Details
     -->
-    <FrameLayout
+
+    <LinearLayout
+        android:id="@+id/linear_layout"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/movie_frame_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/mainBackground" />
+
+
+        <!--
+        For the bottom menu
+        Will update shared prefs
+        -->
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorPrimaryDark" />
+
+        <FrameLayout
+            android:id="@+id/menu_frame_layout"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@color/mainBackground" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/error_message_tv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
         android:background="@color/mainBackground"
-        android:id="@+id/movie_frame_layout" />
-
-
-    <!--
-    For the bottom menu
-    Will update shared prefs
-    -->
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/menuRed"/>
-
-    <FrameLayout
-        android:id="@+id/menu_frame_layout"
-        android:layout_width="match_parent"
-        android:background="@color/mainBackground"
-        android:layout_height="56dp" />
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:visibility="gone" />
 
 </LinearLayout>

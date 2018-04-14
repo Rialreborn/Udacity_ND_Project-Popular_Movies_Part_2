@@ -15,8 +15,36 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="movieDetailBodyText" parent="Base.TextAppearance.AppCompat.Body1">
-        <item name="android:textSize">24sp</item>
+
+    <!-- Movie Detail Text Themes-->
+    <style name="movieDetailSubHeaderText" parent="Base.TextAppearance.AppCompat.Subhead">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:layout_marginTop">6dp</item>
+        <item name="android:layout_marginStart">4dp</item>
+        <item name="android:layout_marginLeft">4dp</item>
+
     </style>
+
+    <style name="movieDetailBodyText" parent="Base.TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_marginTop">1dp</item>
+        <item name="android:layout_marginStart">4dp</item>
+        <item name="android:layout_marginLeft">4dp</item>
+        <item name="android:layout_marginBottom">6dp</item>
+    </style>
+
+    <style name="movieDetailPlotText" parent="Base.TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginRight">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:layout_marginBottom">2dp</item>
+    </style>
+
 
 </resources>

@@ -2,6 +2,7 @@ package com.example.zane.popularmoviesapp;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.support.v4.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.zane.popularmoviesapp.Model.Movie;
 import com.example.zane.popularmoviesapp.Utils.Constants;
@@ -27,6 +27,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by Zane on 03/04/2018.
  */
@@ -35,14 +38,17 @@ public class MovieListFragment extends Fragment {
 
     SharedPreferences sharedPreferences;
 
-    private int columnCount = 3;
     ArrayList<Movie> moviesList;
-    RecyclerView mRecyclerView;
-    TextView mApiKeyNeededTv;
+    @BindView(R.id.recycler_view)
+    RecyclerView recyclerView;
+    @BindView(R.id.api_key_needed_tv)
+    TextView errorTv;
+    @BindView(R.id.progress_bar)
     ProgressBar progressBar;
     String mMovieOrder;
 
-    public MovieListFragment() {}
+    public MovieListFragment() {
+    }
 
 
     @Nullable
@@ -51,32 +57,21 @@ public class MovieListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-            mMovieOrder = sharedPreferences.getString(Constants.MOVIE_SORT_ORDER_KEY, Constants.MOVIE_SORT_ORDER_POPULAR);
-
+        mMovieOrder = sharedPreferences.getString(Constants.MOVIE_SORT_ORDER_KEY, Constants.MOVIE_SORT_ORDER_POPULAR);
 
         final View rootView = inflater.inflate(R.layout.movie_list_fragment, container, false);
-        mRecyclerView = rootView.findViewById(R.id.recycler_view);
-        mApiKeyNeededTv = rootView.findViewById(R.id.api_key_needed_tv);
-        progressBar = rootView.findViewById(R.id.progress_bar);
+
+        ButterKnife.bind(MovieListFragment.this, rootView);
 
 
-        if (Constants.API_KEY == null) {
-            noApiKeyFound();
-        } else {
-            GridLayoutManager layoutManager = new GridLayoutManager(container.getContext(), columnCount);
-            mRecyclerView.setLayoutManager(layoutManager);
-            mRecyclerView.setHasFixedSize(true);
-            loadMovieData();
-        }
+        GridLayoutManager layoutManager = setLayoutManager(container);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
+        loadMovieData();
 
         return rootView;
     }
 
-    private void noApiKeyFound() {
-        mApiKeyNeededTv.setVisibility(View.VISIBLE);
-        mApiKeyNeededTv.setText(getString(R.string.api_key_needed));
-        mRecyclerView.setVisibility(View.GONE);
-    }
 
     private void loadMovieData() {
         URL url = NetworkUtils.buildMoviesUrl(mMovieOrder);
@@ -84,14 +79,27 @@ public class MovieListFragment extends Fragment {
     }
 
     private void showProgressBar() {
-        mRecyclerView.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
     }
 
     private void hideProgressBar() {
         progressBar.setVisibility(View.GONE);
-        mRecyclerView.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.VISIBLE);
     }
+
+    private GridLayoutManager setLayoutManager(ViewGroup container) {
+        if (container != null) {
+            container.removeAllViews();
+        }
+
+        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            return new GridLayoutManager(container.getContext(), 5);
+        } else {
+            return new GridLayoutManager(container.getContext(), 3);
+        }
+    }
+
 
     public class LoadMovieDataAsync extends AsyncTask<URL, Void, ArrayList<Movie>> {
 
@@ -130,16 +138,16 @@ public class MovieListFragment extends Fragment {
                     Movie movie = moviesList.get(position);
                     Intent intent = new Intent(getContext(), MovieDetailActivity.class);
                     intent.putExtra(Constants.INTENT_TITLE, movie.getTitle())
-                    .putExtra(Constants.INTENT_IMAGE_URL, movie.getImageUrl())
-                    .putExtra(Constants.INTENT_USER_RATING, movie.getUserRating())
-                    .putExtra(Constants.INTENT_RELEASE_DATE, movie.getReleaseDate())
-                    .putExtra(Constants.INTENT_PLOT, movie.getPlot())
-                    .putExtra(Constants.INTENT_BACKDROP_URL, movie.getMovieBackdrop());
+                            .putExtra(Constants.INTENT_IMAGE_URL, movie.getImageUrl())
+                            .putExtra(Constants.INTENT_USER_RATING, movie.getUserRating())
+                            .putExtra(Constants.INTENT_RELEASE_DATE, movie.getReleaseDate())
+                            .putExtra(Constants.INTENT_PLOT, movie.getPlot())
+                            .putExtra(Constants.INTENT_BACKDROP_URL, movie.getMovieBackdrop());
                     startActivity(intent);
                 }
             });
 
-            mRecyclerView.setAdapter(movieListAdapter);
+            recyclerView.setAdapter(movieListAdapter);
         }
     }
 }

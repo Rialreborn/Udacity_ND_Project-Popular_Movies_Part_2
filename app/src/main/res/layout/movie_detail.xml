@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-            app:contentScrim="@color/menuInactiveText"
+            app:contentScrim="@color/colorPrimaryDark"
             app:expandedTitleMarginEnd="64dp"
             app:expandedTitleMarginStart="48dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
@@ -65,8 +65,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="220dp"
                     android:adjustViewBounds="true"
+                    android:contentDescription="@string/movie_details_poster_content_description"
                     android:scaleType="centerCrop"
-                    android:layout_margin="@dimen/movie_detail_margin_image"/>
+                    android:layout_margin="8dp"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -76,34 +77,33 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/Base.TextAppearance.AppCompat.Subhead"
-                        android:textColor="@color/menuRed"
-                        android:text="@string/movie_details_user_rating"
-                        android:layout_marginLeft="@dimen/movie_detail_margin_left"/>
+                        style="@style/movieDetailSubHeaderText"
+                        android:text="@string/movie_details_user_rating"/>
 
                     <TextView
                         android:id="@+id/user_rating_tv"
                         android:layout_width="wrap_content"
-                        android:textColor="@color/white"
-                        style="@style/Base.TextAppearance.AppCompat.Body1"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/movie_detail_margin_left"/>
+                        style="@style/movieDetailBodyText"
+                        android:layout_height="wrap_content"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:background="@color/colorPrimary"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_height="1dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/menuRed"
-                        style="@style/Base.TextAppearance.AppCompat.Subhead"
-                        android:text="@string/movie_details_release_date"
-                        android:layout_marginLeft="@dimen/movie_detail_margin_left"/>
+                        style="@style/movieDetailSubHeaderText"
+                        android:text="@string/movie_details_release_date"/>
 
                     <TextView
                         android:id="@+id/release_date_tv"
-                        style="@style/Base.TextAppearance.AppCompat.Body1"
-                        android:textColor="@color/white"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/movie_detail_margin_left"/>
+                        style="@style/movieDetailBodyText"
+                        android:layout_height="wrap_content"/>
 
 
                 </LinearLayout>
@@ -112,8 +112,7 @@
 
             <TextView
                 android:id="@+id/plot_tv"
-                style="@style/movieDetailBodyText"
-                android:textColor="@color/white"
+                style="@style/movieDetailPlotText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
