@@ -3,10 +3,10 @@
     <item
         android:id="@+id/popular_movies_menu_item"
         android:icon="@drawable/icons8_fire_50"
-        android:title="Popular" />
+        android:title="@string/menu_popular_tag" />
     <item
         android:id="@+id/highest_rated_movies_menu_item"
         android:icon="@drawable/icons8_thumbs_up_24"
-        android:title="Highest Rated" />
+        android:title="@string/menu_highest_rating_tag" />
 
 </menu>

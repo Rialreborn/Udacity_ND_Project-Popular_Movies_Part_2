@@ -6,17 +6,16 @@
     android:layout_height="match_parent"
     android:background="@color/mainBackground"
     android:fitsSystemWindows="true"
-    tools:context=".MovieDetailActivity">
+    tools:context=".MovieDetailActivity"
+    tools:ignore="Overdraw">
 
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:fitsSystemWindows="true"
         android:theme="@style/Base.ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/collapsingToolbar"
             style="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -90,7 +89,6 @@
                         android:layout_width="match_parent"
                         android:background="@color/colorPrimary"
                         android:layout_marginEnd="8dp"
-                        android:layout_marginRight="8dp"
                         android:layout_height="1dp"/>
 
                     <TextView

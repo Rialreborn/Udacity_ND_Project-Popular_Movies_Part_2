@@ -3,6 +3,7 @@ package com.example.zane.popularmoviesapp;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.example.zane.popularmoviesapp.Model.Movie;
 import com.example.zane.popularmoviesapp.Utils.Constants;
@@ -30,22 +30,18 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by Zane on 03/04/2018.
- */
 
 public class MovieListFragment extends Fragment {
 
-    SharedPreferences sharedPreferences;
+    private String mMovieOrder;
 
-    ArrayList<Movie> moviesList;
+    private ArrayList<Movie> moviesList;
+
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
-    @BindView(R.id.api_key_needed_tv)
-    TextView errorTv;
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
-    String mMovieOrder;
+
 
     public MovieListFragment() {
     }
@@ -53,10 +49,10 @@ public class MovieListFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mMovieOrder = sharedPreferences.getString(Constants.MOVIE_SORT_ORDER_KEY, Constants.MOVIE_SORT_ORDER_POPULAR);
 
         final View rootView = inflater.inflate(R.layout.movie_list_fragment, container, false);
@@ -88,6 +84,7 @@ public class MovieListFragment extends Fragment {
         recyclerView.setVisibility(View.VISIBLE);
     }
 
+    @SuppressWarnings("ConstantConditions")
     private GridLayoutManager setLayoutManager(ViewGroup container) {
         if (container != null) {
             container.removeAllViews();
@@ -134,7 +131,7 @@ public class MovieListFragment extends Fragment {
 
             MovieListAdapter movieListAdapter = new MovieListAdapter(moviesList, new MovieListAdapter.OnItemClickListener() {
                 @Override
-                public void onItemClick(View itemView, int position) {
+                public void onItemClick(int position) {
                     Movie movie = moviesList.get(position);
                     Intent intent = new Intent(getContext(), MovieDetailActivity.class);
                     intent.putExtra(Constants.INTENT_TITLE, movie.getTitle())

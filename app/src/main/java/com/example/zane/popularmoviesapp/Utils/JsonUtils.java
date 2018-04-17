@@ -8,15 +8,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-/**
- * Created by Zane on 03/04/2018.
- */
 
 public class JsonUtils {
 
-
-    public JsonUtils() {
-    }
 
     public static ArrayList<Movie> getPopularMovieList(String json) throws JSONException {
         ArrayList<Movie> movieArray = new ArrayList<>();

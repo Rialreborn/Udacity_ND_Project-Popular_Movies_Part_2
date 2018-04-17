@@ -9,25 +9,22 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
-/**
- * Created by Zane on 03/04/2018.
- */
 
 public class NetworkUtils {
 
     // Constants
-    public static final String BASE_URL = "https://api.themoviedb.org/3/movie/";
-    public static final String API = "api_key";
+    private static final String BASE_URL = "https://api.themoviedb.org/3/movie/";
+    private static final String API = "api_key";
 
-    public static final String LANGUAGE = "language";
-    public static final String LAN_EN_US = "en-US";
-    public static final String PAGE = "page";
-    public static final String PAGE_NUMBER = "1";
+    private static final String LANGUAGE = "language";
+    private static final String LAN_EN_US = "en-US";
+    private static final String PAGE = "page";
+    private static final String PAGE_NUMBER = "1";
 
     // Image related
-    public static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
-    public static final String IMAGE_SIZE_W185 = "w185";
-    public static final String IMAGE_SIZE_W342 = "w342";
+    private static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
+    private static final String IMAGE_SIZE_W185 = "w185";
+    private static final String IMAGE_SIZE_W342 = "w342";
 
 
 
@@ -50,15 +47,13 @@ public class NetworkUtils {
     }
 
     public static Uri buildImageURL(String imageUrl){
-        Uri builtUri = Uri.parse(IMAGE_BASE_URL + IMAGE_SIZE_W185 + imageUrl);
 
-        return builtUri;
+        return Uri.parse(IMAGE_BASE_URL + IMAGE_SIZE_W185 + imageUrl);
     }
 
     public static Uri buildMovieBackdropURL(String imageUrl){
-        Uri builtUri = Uri.parse(IMAGE_BASE_URL + IMAGE_SIZE_W342 + imageUrl);
 
-        return builtUri;
+        return Uri.parse(IMAGE_BASE_URL + IMAGE_SIZE_W342 + imageUrl);
     }
 
     public static String getResponseFromHttpUrl(URL url) throws IOException {

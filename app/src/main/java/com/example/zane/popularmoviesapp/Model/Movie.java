@@ -1,17 +1,14 @@
 package com.example.zane.popularmoviesapp.Model;
 
-/**
- * Created by Zane on 03/04/2018.
- */
 
 public class Movie {
 
-    private String mTitle;
-    private String mImageUrl;
-    private String mPlot;
-    private double mUserRating;
-    private String mReleaseDate;
-    private String mMovieBackdrop;
+    private final String mTitle;
+    private final String mImageUrl;
+    private final String mPlot;
+    private final double mUserRating;
+    private final String mReleaseDate;
+    private final String mMovieBackdrop;
 
     public Movie(String title, String imageUrl, String plot, double userRating, String releaseDate, String movieBackdrop) {
         this.mTitle = title;

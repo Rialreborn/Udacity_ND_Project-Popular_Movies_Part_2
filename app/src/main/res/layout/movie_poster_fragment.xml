@@ -9,6 +9,6 @@
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
         android:id="@+id/rv_movie_list_image"
-
-        android:layout_margin="2dp"/>
+        android:layout_margin="2dp"
+        android:contentDescription="@string/movie_details_poster_content_description" />
 </LinearLayout>

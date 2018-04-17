@@ -12,4 +12,8 @@
     <string name="movie_details_release_date">Release Date</string>
     <string name="movie_details_backdrop_content_description">Movie Backdrop</string>
     <string name="movie_details_poster_content_description">Movie Poster Image</string>
+
+    <!-- Menu -->
+    <string name="menu_popular_tag">Popular</string>
+    <string name="menu_highest_rating_tag">Highest Rating</string>
 </resources>

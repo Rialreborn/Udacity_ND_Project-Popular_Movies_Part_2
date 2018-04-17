@@ -1,9 +1,5 @@
 package com.example.zane.popularmoviesapp.Utils;
 
-/**
- * Created by Zane on 09/04/2018.
- */
-
 public class Constants {
 
     // ENTER API KEY HERE
@@ -21,7 +17,6 @@ public class Constants {
     public static final String PLOT = "overview";
     public static final String USER_RATING = "vote_average";
     public static final String RELEASE_DATE = "release_date";
-    public static final String POPULAR = "popular";
     public static final String JSON_RESULTS = "results";
     public static final String FAIL_TO_RETRIEVE = "Failed to Retrieve";
 

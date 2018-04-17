@@ -1,6 +1,5 @@
 package com.example.zane.popularmoviesapp;
 
-import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.app.FragmentManager;
@@ -31,7 +30,8 @@ public class MainActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        if (Constants.API_KEY == null) {
+        //noinspection ConstantConditions
+        if (Constants.API_KEY == null || Constants.API_KEY.isEmpty()) {
             noApiKeyFound();
         } else if (!networkConnection()) {
             noNetworkFound();
@@ -66,13 +66,16 @@ public class MainActivity extends AppCompatActivity {
         error_message_tv.setText(getString(R.string.no_network));
     }
 
-    public boolean networkConnection() {
+    private boolean networkConnection() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(CONNECTIVITY_SERVICE);
 
-        NetworkInfo info = connectivityManager.getActiveNetworkInfo();
+        NetworkInfo info = null;
+        if (connectivityManager != null) {
+            info = connectivityManager.getActiveNetworkInfo();
+        }
 
-        boolean connected = info != null && info.isConnectedOrConnecting();
-
-        return connected;
+        return info != null && info.isConnectedOrConnecting();
     }
+
+
 }

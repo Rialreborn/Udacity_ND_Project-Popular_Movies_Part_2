@@ -23,9 +23,6 @@ import com.squareup.picasso.Picasso;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by Zane on 08/04/2018.
- */
 
 public class MovieDetailActivity extends AppCompatActivity {
 
@@ -51,7 +48,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
 
         // Get Info for Movie Details
-        String userRating = String.valueOf(intent.getDoubleExtra(Constants.INTENT_USER_RATING, 0.0)) + " / 10";
+        String userRating = String.valueOf(intent != null ? intent.getDoubleExtra(Constants.INTENT_USER_RATING, 0.0) : 0) + " / 10";
         Uri backdropImageUri = NetworkUtils.buildMovieBackdropURL(intent.getStringExtra(Constants.INTENT_BACKDROP_URL));
         Uri moviePosterUri = NetworkUtils.buildImageURL(intent.getStringExtra(Constants.INTENT_IMAGE_URL));
 
