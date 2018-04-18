@@ -1,4 +1,4 @@
-package com.example.zane.popularmoviesapp;
+package com.example.android.popularmoviesapp;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -8,8 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.example.zane.popularmoviesapp.Model.Movie;
-import com.example.zane.popularmoviesapp.Utils.NetworkUtils;
+import com.example.android.popularmoviesapp.Model.Movie;
+import com.example.android.popularmoviesapp.Utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
     @Override
     public MovieHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.movie_poster_fragment, parent, false);
+                .inflate(com.example.android.popularmoviesapp.R.layout.movie_poster_fragment, parent, false);
         return new MovieHolder(view);
     }
 
@@ -55,7 +55,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
         public MovieHolder(View itemView) {
             super(itemView);
             mView = itemView;
-            mMoviePosterImage = itemView.findViewById(R.id.rv_movie_list_image);
+            mMoviePosterImage = itemView.findViewById(com.example.android.popularmoviesapp.R.id.rv_movie_list_image);
             mView.setOnClickListener(this);
         }
 

@@ -1,9 +1,12 @@
-package com.example.zane.popularmoviesapp.Utils;
+package com.example.android.popularmoviesapp.Utils;
+
+
+import com.example.android.popularmoviesapp.BuildConfig;
 
 public class Constants {
 
     // ENTER API KEY HERE
-    public static final String API_KEY = null;
+    public static final String API_KEY = BuildConfig.API_KEY;
 
     // Sort Order
     public static final String MOVIE_SORT_ORDER_KEY = "movie_sort_order";

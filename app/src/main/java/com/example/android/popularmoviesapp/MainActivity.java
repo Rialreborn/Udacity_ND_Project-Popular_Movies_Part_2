@@ -1,4 +1,4 @@
-package com.example.zane.popularmoviesapp;
+package com.example.android.popularmoviesapp;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -12,21 +12,21 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.zane.popularmoviesapp.Menu.BottomNavigationMenu;
-import com.example.zane.popularmoviesapp.Utils.Constants;
+import com.example.android.popularmoviesapp.Menu.BottomNavigationMenu;
+import com.example.android.popularmoviesapp.Utils.Constants;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
-    @BindView(R.id.error_message_tv) TextView error_message_tv;
-    @BindView(R.id.linear_layout) LinearLayout linearLayout;
+    @BindView(com.example.android.popularmoviesapp.R.id.error_message_tv) TextView error_message_tv;
+    @BindView(com.example.android.popularmoviesapp.R.id.linear_layout) LinearLayout linearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(com.example.android.popularmoviesapp.R.layout.activity_main);
 
         ButterKnife.bind(this);
 
@@ -42,14 +42,14 @@ public class MainActivity extends AppCompatActivity {
 
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
-                    .add(R.id.movie_frame_layout, movieListFragment)
-                    .add(R.id.menu_frame_layout, bottomNavigationMenu)
+                    .add(com.example.android.popularmoviesapp.R.id.movie_frame_layout, movieListFragment)
+                    .add(com.example.android.popularmoviesapp.R.id.menu_frame_layout, bottomNavigationMenu)
                     .commit();
 
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDarker));
+            window.setStatusBarColor(ContextCompat.getColor(this, com.example.android.popularmoviesapp.R.color.colorPrimaryDarker));
         }
     }
 
@@ -57,13 +57,13 @@ public class MainActivity extends AppCompatActivity {
     private void noApiKeyFound() {
         linearLayout.setVisibility(View.GONE);
         error_message_tv.setVisibility(View.VISIBLE);
-        error_message_tv.setText(getString(R.string.api_key_needed));
+        error_message_tv.setText(getString(com.example.android.popularmoviesapp.R.string.api_key_needed));
     }
 
     private void noNetworkFound() {
         linearLayout.setVisibility(View.GONE);
         error_message_tv.setVisibility(View.VISIBLE);
-        error_message_tv.setText(getString(R.string.no_network));
+        error_message_tv.setText(getString(com.example.android.popularmoviesapp.R.string.no_network));
     }
 
     private boolean networkConnection() {

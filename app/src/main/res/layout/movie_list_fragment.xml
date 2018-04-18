@@ -14,7 +14,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
-        tools:context="com.example.zane.popularmoviesapp.MovieListFragment"
+        tools:context="com.example.android.popularmoviesapp.MovieListFragment"
         tools:listitem="@layout/movie_poster_fragment" />
 
 

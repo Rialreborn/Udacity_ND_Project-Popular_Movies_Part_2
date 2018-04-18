@@ -1,4 +1,4 @@
-package com.example.zane.popularmoviesapp.Model;
+package com.example.android.popularmoviesapp.Model;
 
 
 public class Movie {

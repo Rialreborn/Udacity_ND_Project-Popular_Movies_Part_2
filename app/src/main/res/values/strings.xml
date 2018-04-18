@@ -4,7 +4,7 @@
 
 
     <string name="api_key_needed">API Key Needed! \n Please update Constants Class!</string>
-    <string name="no_network">No Network Detected! \n Please check network status!</string>
+    <string name="no_network">Please check network status!</string>
     <string name="detail_intent_error">Error loading movie details</string>
 
     <!-- Movie Details -->

@@ -1,4 +1,4 @@
-package com.example.zane.popularmoviesapp;
+package com.example.android.popularmoviesapp;
 
 import org.junit.Test;
 

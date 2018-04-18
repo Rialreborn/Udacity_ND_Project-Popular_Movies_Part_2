@@ -1,4 +1,4 @@
-package com.example.zane.popularmoviesapp.Utils;
+package com.example.android.popularmoviesapp.Utils;
 
 import android.net.Uri;
 

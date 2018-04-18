@@ -1,6 +1,6 @@
-package com.example.zane.popularmoviesapp.Utils;
+package com.example.android.popularmoviesapp.Utils;
 
-import com.example.zane.popularmoviesapp.Model.Movie;
+import com.example.android.popularmoviesapp.Model.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,10 +17,12 @@ public class JsonUtils {
 
         JSONObject jsonObject = new JSONObject(json);
         JSONArray jsonArray = jsonObject.getJSONArray(Constants.JSON_RESULTS);
+        System.out.println("ATTEMPT TO GET MOVIES");
 
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject movieDetails = (JSONObject) jsonArray.get(i);
             String movieTitle = movieDetails.optString(Constants.TITLE, Constants.FAIL_TO_RETRIEVE);
+            System.out.println("MOVIE TITLE: " + movieTitle);
             String imageURL = movieDetails.optString(Constants.POSTER_URL, Constants.FAIL_TO_RETRIEVE);
             String plot = movieDetails.optString(Constants.PLOT, Constants.FAIL_TO_RETRIEVE);
             String releaseDate = movieDetails.optString(Constants.RELEASE_DATE, Constants.FAIL_TO_RETRIEVE);

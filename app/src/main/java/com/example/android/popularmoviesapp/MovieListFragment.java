@@ -1,11 +1,13 @@
-package com.example.zane.popularmoviesapp;
+package com.example.android.popularmoviesapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.preference.PreferenceManager;
@@ -15,15 +17,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
-import com.example.zane.popularmoviesapp.Model.Movie;
-import com.example.zane.popularmoviesapp.Utils.Constants;
-import com.example.zane.popularmoviesapp.Utils.JsonUtils;
-import com.example.zane.popularmoviesapp.Utils.NetworkUtils;
+import com.example.android.popularmoviesapp.Model.Movie;
+import com.example.android.popularmoviesapp.Utils.AsyncTaskCompleteListener;
+import com.example.android.popularmoviesapp.Utils.AsyncTaskPreExecuteListener;
+import com.example.android.popularmoviesapp.Utils.Constants;
+import com.example.android.popularmoviesapp.Utils.LoadMovieData;
+import com.example.android.popularmoviesapp.Utils.NetworkUtils;
 
-import org.json.JSONException;
-
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -37,9 +39,9 @@ public class MovieListFragment extends Fragment {
 
     private ArrayList<Movie> moviesList;
 
-    @BindView(R.id.recycler_view)
+    @BindView(com.example.android.popularmoviesapp.R.id.recycler_view)
     RecyclerView recyclerView;
-    @BindView(R.id.progress_bar)
+    @BindView(com.example.android.popularmoviesapp.R.id.progress_bar)
     ProgressBar progressBar;
 
 
@@ -55,7 +57,7 @@ public class MovieListFragment extends Fragment {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mMovieOrder = sharedPreferences.getString(Constants.MOVIE_SORT_ORDER_KEY, Constants.MOVIE_SORT_ORDER_POPULAR);
 
-        final View rootView = inflater.inflate(R.layout.movie_list_fragment, container, false);
+        final View rootView = inflater.inflate(com.example.android.popularmoviesapp.R.layout.movie_list_fragment, container, false);
 
         ButterKnife.bind(MovieListFragment.this, rootView);
 
@@ -70,8 +72,21 @@ public class MovieListFragment extends Fragment {
 
 
     private void loadMovieData() {
-        URL url = NetworkUtils.buildMoviesUrl(mMovieOrder);
-        new LoadMovieDataAsync().execute(url);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo info = null;
+            if (connectivityManager != null) {
+                info = connectivityManager.getActiveNetworkInfo();
+            }
+
+            if (info != null && info.isConnectedOrConnecting()) {
+                URL url = NetworkUtils.buildMoviesUrl(mMovieOrder);
+                new LoadMovieData(new FetchMyDataTaskCompleteListener(), new FetchMyDataTaskCompleteListener()).execute(url);
+            } else {
+                Toast.makeText(getActivity(), getString(R.string.no_network), Toast.LENGTH_SHORT ).show();
+            }
+
+
     }
 
     private void showProgressBar() {
@@ -98,53 +113,37 @@ public class MovieListFragment extends Fragment {
     }
 
 
-    public class LoadMovieDataAsync extends AsyncTask<URL, Void, ArrayList<Movie>> {
 
+    public class FetchMyDataTaskCompleteListener implements AsyncTaskCompleteListener<ArrayList<Movie>>, AsyncTaskPreExecuteListener
+    {
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            showProgressBar();
-        }
-
-        @Override
-        protected ArrayList<Movie> doInBackground(URL... urls) {
-            URL url = urls[0];
-            ArrayList<Movie> movieArray = null;
-            try {
-                movieArray = JsonUtils.getPopularMovieList(NetworkUtils.getResponseFromHttpUrl(url));
-            } catch (IOException e) {
-                System.out.println("FAILED TO EXTRACT JSON FROM URL: " + e);
-            } catch (JSONException e) {
-                System.out.println("JSON EXCEPTION: " + e);
-            }
-            return movieArray;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Movie> movies) {
-            super.onPostExecute(movies);
-
+        public void onTaskComplete(final ArrayList<Movie> result) {
             hideProgressBar();
 
-            moviesList = movies;
-
-
-            MovieListAdapter movieListAdapter = new MovieListAdapter(moviesList, new MovieListAdapter.OnItemClickListener() {
+            MovieListAdapter movieListAdapter = new MovieListAdapter(result, new MovieListAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(int position) {
-                    Movie movie = moviesList.get(position);
+                    Movie movie = result.get(position);
                     Intent intent = new Intent(getContext(), MovieDetailActivity.class);
-                    intent.putExtra(Constants.INTENT_TITLE, movie.getTitle())
-                            .putExtra(Constants.INTENT_IMAGE_URL, movie.getImageUrl())
-                            .putExtra(Constants.INTENT_USER_RATING, movie.getUserRating())
-                            .putExtra(Constants.INTENT_RELEASE_DATE, movie.getReleaseDate())
-                            .putExtra(Constants.INTENT_PLOT, movie.getPlot())
-                            .putExtra(Constants.INTENT_BACKDROP_URL, movie.getMovieBackdrop());
-                    startActivity(intent);
+                intent.putExtra(Constants.INTENT_TITLE, movie.getTitle())
+                        .putExtra(Constants.INTENT_IMAGE_URL, movie.getImageUrl())
+                        .putExtra(Constants.INTENT_USER_RATING, movie.getUserRating())
+                        .putExtra(Constants.INTENT_RELEASE_DATE, movie.getReleaseDate())
+                        .putExtra(Constants.INTENT_PLOT, movie.getPlot())
+                        .putExtra(Constants.INTENT_BACKDROP_URL, movie.getMovieBackdrop());
+                startActivity(intent);
                 }
             });
 
             recyclerView.setAdapter(movieListAdapter);
         }
+
+        @Override
+        public void beforeAsyncExecute() {
+            showProgressBar();
+        }
     }
-}
+    }
+
+
+

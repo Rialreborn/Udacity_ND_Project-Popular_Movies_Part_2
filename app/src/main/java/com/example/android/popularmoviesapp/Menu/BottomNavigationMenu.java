@@ -1,4 +1,4 @@
-package com.example.zane.popularmoviesapp.Menu;
+package com.example.android.popularmoviesapp.Menu;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,9 +13,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.zane.popularmoviesapp.MovieListFragment;
-import com.example.zane.popularmoviesapp.R;
-import com.example.zane.popularmoviesapp.Utils.Constants;
+import com.example.android.popularmoviesapp.MovieListFragment;
+import com.example.android.popularmoviesapp.R;
+import com.example.android.popularmoviesapp.Utils.Constants;
 
 public class BottomNavigationMenu extends Fragment {
 
