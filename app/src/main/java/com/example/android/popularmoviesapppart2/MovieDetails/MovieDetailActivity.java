@@ -10,7 +10,12 @@ import android.support.v7.app.AppCompatActivity;
 
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
+import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -19,15 +24,17 @@ import android.widget.Toast;
 
 import android.support.v7.widget.Toolbar;
 
+import com.example.android.popularmoviesapppart2.Model.Reviews;
 import com.example.android.popularmoviesapppart2.Model.Trailers;
 import com.example.android.popularmoviesapppart2.R;
 import com.example.android.popularmoviesapppart2.Utils.Constants;
+import com.example.android.popularmoviesapppart2.Utils.LoadReviews;
+import com.example.android.popularmoviesapppart2.Utils.LoadReviews.OnReviewsLoadFinished;
 import com.example.android.popularmoviesapppart2.Utils.LoadTrailerData;
-import com.example.android.popularmoviesapppart2.Utils.LoadTrailerData.OnLoadFinished;
+import com.example.android.popularmoviesapppart2.Utils.LoadTrailerData.OnTrailerLoadFinished;
 import com.example.android.popularmoviesapppart2.Utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -36,7 +43,8 @@ import butterknife.ButterKnife;
 
 
 public class MovieDetailActivity extends AppCompatActivity
-    implements OnLoadFinished {
+    implements  OnTrailerLoadFinished,
+                OnReviewsLoadFinished {
 
     @BindView(R.id.movie_backdrop) ImageView backdropImage;
     @BindView(R.id.movie_image) ImageView movieImage;
@@ -45,6 +53,7 @@ public class MovieDetailActivity extends AppCompatActivity
     @BindView(R.id.plot_tv) TextView plotTv;
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.rv_trailerList) RecyclerView rvTrailerList;
+    @BindView(R.id.rv_reviews) RecyclerView rvReviews;
 
     int movieID;
 
@@ -66,32 +75,41 @@ public class MovieDetailActivity extends AppCompatActivity
          */
         movieID = intent.getIntExtra(Constants.INTENT_MOVIE_ID, 0);
 
-
-
+        /*
+         * Populate Views with intent data
+         */
         populateViews(intent);
 
         /*
-         * Get Trailers
+         * Set up Trailer RV
          */
+        SnapHelper trailerHelper = new LinearSnapHelper();
         URL trailerUrl = NetworkUtils.buildTrailersUrl(movieID);
         new LoadTrailerData(this).execute(trailerUrl);
-
-        /*
-         * Set up RV
-         */
         LinearLayoutManager layoutManager =
                 new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        trailerHelper.attachToRecyclerView(rvTrailerList);
         rvTrailerList.addItemDecoration(new DividerItemDecoration(MovieDetailActivity.this, layoutManager.HORIZONTAL));
         rvTrailerList.setHasFixedSize(true);
         rvTrailerList.setLayoutManager(layoutManager);
 
-
+        /*
+         * Set up Reviews RV
+         */
+        SnapHelper reviewsHelper = new LinearSnapHelper();
+        URL reviewUrl = NetworkUtils.buildReviewsUrl(movieID);
+        new LoadReviews(this).execute(reviewUrl);
+        LinearLayoutManager reviewLayoutManager =
+                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        reviewsHelper.attachToRecyclerView(rvReviews);
+        rvReviews.addItemDecoration(new DividerItemDecoration(MovieDetailActivity.this, layoutManager.HORIZONTAL));
+        rvReviews.setHasFixedSize(true);
+        rvReviews.setLayoutManager(reviewLayoutManager);
 
         /*
          * Update Toolbar and Window
          */
         toolbar.setTitle(intent.getStringExtra(Constants.INTENT_TITLE));
-
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -128,22 +146,8 @@ public class MovieDetailActivity extends AppCompatActivity
                 .into(movieImage);
     }
 
-    private void loadReviews() {
-        String json;
-        URL url = NetworkUtils.buildReviewsUrl(movieID);
-        try {
-             json = NetworkUtils.getJsonResponseFromHttpUrl(url);
-             
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-
-    }
-
     @Override
-    public void loadFinished(final ArrayList<Trailers> trailersArrayList) {
+    public void trailersFinished(final ArrayList<Trailers> trailersArrayList) {
 
         TrailerListAdapter trailerListAdapter = new TrailerListAdapter(trailersArrayList, new TrailerListAdapter.OnTrailerClickListener() {
             @Override
@@ -161,5 +165,14 @@ public class MovieDetailActivity extends AppCompatActivity
         });
 
         rvTrailerList.setAdapter(trailerListAdapter);
+    }
+
+    @Override
+    public void reviewsFinished(ArrayList<Reviews> reviewsArrayList) {
+
+
+                ReviewListAdapter reviewListAdapter = new ReviewListAdapter(reviewsArrayList);
+        rvReviews.setAdapter(reviewListAdapter);
+
     }
 }

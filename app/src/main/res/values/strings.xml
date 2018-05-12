@@ -16,4 +16,7 @@
     <!-- Menu -->
     <string name="menu_popular_tag">Popular</string>
     <string name="menu_highest_rating_tag">Highest Rating</string>
+
+    <!-- Reviews List Item -->
+    <string name="review_author">Author: </string>
 </resources>

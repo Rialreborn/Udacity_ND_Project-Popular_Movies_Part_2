@@ -16,10 +16,10 @@ import java.util.ArrayList;
 
 public class LoadTrailerData extends AsyncTask<URL, Void, ArrayList<Trailers>> {
 
-    OnLoadFinished mOnLoadFinished;
+    OnTrailerLoadFinished mOnTrailerLoadFinished;
 
-    public LoadTrailerData(OnLoadFinished onLoadFinished){
-        this.mOnLoadFinished = onLoadFinished;
+    public LoadTrailerData(OnTrailerLoadFinished onTrailerLoadFinished){
+        this.mOnTrailerLoadFinished = onTrailerLoadFinished;
     }
 
 
@@ -44,14 +44,15 @@ public class LoadTrailerData extends AsyncTask<URL, Void, ArrayList<Trailers>> {
     protected void onPostExecute(ArrayList<Trailers> trailers) {
         super.onPostExecute(trailers);
 
-        mOnLoadFinished.loadFinished(trailers);
+        mOnTrailerLoadFinished.trailersFinished(trailers);
     }
 
     /**
      * Inteerface for after Async has finished
      */
-    public interface OnLoadFinished {
-        void loadFinished(ArrayList<Trailers> trailersArrayList);
+    public interface OnTrailerLoadFinished {
+        void trailersFinished(ArrayList<Trailers> trailersArrayList);
+
     }
 }
 

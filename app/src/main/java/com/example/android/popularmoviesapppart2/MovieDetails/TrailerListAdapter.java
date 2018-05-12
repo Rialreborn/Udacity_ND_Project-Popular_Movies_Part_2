@@ -41,7 +41,6 @@ public class TrailerListAdapter extends RecyclerView.Adapter<TrailerListAdapter.
 
     @Override
     public int getItemCount() {
-        System.out.println("Trailers size: " + mTrailersArrayList.size());
         return mTrailersArrayList.size();
     }
 
