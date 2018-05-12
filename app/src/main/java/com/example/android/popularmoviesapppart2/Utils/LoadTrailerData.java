@@ -30,7 +30,7 @@ public class LoadTrailerData extends AsyncTask<URL, Void, ArrayList<Trailers>> {
         URL url = urls[0];
 
         try {
-            trailersArrayList = JsonUtils.getTrailerList(NetworkUtils.getResponseFromHttpUrl(url));
+            trailersArrayList = JsonUtils.getTrailerList(NetworkUtils.getJsonResponseFromHttpUrl(url));
 
         } catch (IOException e) {
             System.out.println("FAILED TO EXTRACT JSON FROM URL: " + e);

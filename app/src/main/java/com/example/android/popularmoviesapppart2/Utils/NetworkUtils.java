@@ -21,9 +21,10 @@ public class NetworkUtils {
     private static final String LAN_EN_US = "en-US";
     private static final String PAGE = "page";
     private static final String PAGE_NUMBER = "1";
+    private static final String REVIEWS = "/reviews";
 
     // Youtube
-    private static final String BASE_YOUTUBE_URL = "https://youtube.com/watch/";
+    private static final String BASE_YOUTUBE_URL = "https://youtube.com/watch";
     private static final String BASE_YOUTUBE_IMAGE_URL = "https://img.youtube.com/vi/";
     private static final String BASE_YOUTUBE_URL_APP = "vnd.youtube:";
     private static final String IMAGE_NUMBER = "/0.jpg";
@@ -54,15 +55,13 @@ public class NetworkUtils {
         return convertUriToUrl(builtUri);
     }
 
-    public static Uri buildYoutubeUrl(String key) {
-
+    public static Uri buildYoutubeUri(String key) {
         return Uri.parse(BASE_YOUTUBE_URL).buildUpon()
                 .appendQueryParameter(VIDEO, key)
                 .build();
     }
 
-    public static Uri youtubeAppUri(String key) {
-
+    public static Uri buildYoutubeAppUri(String key) {
         return Uri.parse(BASE_YOUTUBE_URL_APP + key);
     }
 
@@ -71,29 +70,28 @@ public class NetworkUtils {
         return Uri.parse(BASE_YOUTUBE_IMAGE_URL + key + IMAGE_NUMBER);
     }
 
-    private static URL convertUriToUrl(Uri uri) {
-        URL url = null;
+    public static URL buildReviewsUrl(int id) {
+        Uri builtUri = Uri.parse(BASE_URL + id + REVIEWS).buildUpon()
+                .appendQueryParameter(API, Constants.API_KEY)
+                .appendQueryParameter(LANGUAGE, LAN_EN_US)
+                .build();
 
-        try {
-            url = new URL(uri.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        return url;
+        return convertUriToUrl(builtUri);
     }
+
+
 
     public static Uri buildImageURL(String imageUrl){
 
         return Uri.parse(IMAGE_BASE_URL + IMAGE_SIZE_W185 + imageUrl);
     }
 
-    public static Uri buildMovieBackdropURL(String imageUrl){
+    public static Uri buildMovieBackdropUri(String imageUrl){
 
         return Uri.parse(IMAGE_BASE_URL + IMAGE_SIZE_W342 + imageUrl);
     }
 
-    public static String getResponseFromHttpUrl(URL url) throws IOException {
+    public static String getJsonResponseFromHttpUrl(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         try {
             InputStream inputStream = urlConnection.getInputStream();
@@ -112,4 +110,15 @@ public class NetworkUtils {
         }
     }
 
+    private static URL convertUriToUrl(Uri uri) {
+        URL url = null;
+
+        try {
+            url = new URL(uri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
 }

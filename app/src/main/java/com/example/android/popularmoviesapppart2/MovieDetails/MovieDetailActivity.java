@@ -9,7 +9,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Window;
@@ -28,6 +27,7 @@ import com.example.android.popularmoviesapppart2.Utils.LoadTrailerData.OnLoadFin
 import com.example.android.popularmoviesapppart2.Utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -44,9 +44,9 @@ public class MovieDetailActivity extends AppCompatActivity
     @BindView(R.id.release_date_tv) TextView releaseDateTv;
     @BindView(R.id.plot_tv) TextView plotTv;
     @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.movie_id) TextView movieId;
     @BindView(R.id.rv_trailerList) RecyclerView rvTrailerList;
 
+    int movieID;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,14 +61,19 @@ public class MovieDetailActivity extends AppCompatActivity
             closeOnNullIntent();
         }
 
+        /*
+         * Init. Movie ID
+         */
+        movieID = intent.getIntExtra(Constants.INTENT_MOVIE_ID, 0);
+
+
+
         populateViews(intent);
 
         /*
          * Get Trailers
          */
-        URL trailerUrl = NetworkUtils.buildTrailersUrl(
-                intent.getIntExtra(
-                        Constants.INTENT_MOVIE_ID, 0));
+        URL trailerUrl = NetworkUtils.buildTrailersUrl(movieID);
         new LoadTrailerData(this).execute(trailerUrl);
 
         /*
@@ -103,7 +108,7 @@ public class MovieDetailActivity extends AppCompatActivity
         String userRating = String.valueOf(
                 intent != null ? intent.getDoubleExtra(Constants.INTENT_USER_RATING, 0.0) : 0) + " / 10";
         Uri backdropImageUri =
-                NetworkUtils.buildMovieBackdropURL(intent.getStringExtra(Constants.INTENT_BACKDROP_URL));
+                NetworkUtils.buildMovieBackdropUri(intent.getStringExtra(Constants.INTENT_BACKDROP_URL));
         Uri moviePosterUri =
                 NetworkUtils.buildImageURL(intent.getStringExtra(Constants.INTENT_IMAGE_URL));
 
@@ -111,7 +116,6 @@ public class MovieDetailActivity extends AppCompatActivity
         userRatingTv.setText(userRating);
         releaseDateTv.setText(intent.getStringExtra(Constants.INTENT_RELEASE_DATE));
         plotTv.setText(intent.getStringExtra(Constants.INTENT_PLOT));
-        movieId.setText(intent.getStringExtra(Constants.MOVIE_ID));
 
         /**
          * Load Images
@@ -124,16 +128,29 @@ public class MovieDetailActivity extends AppCompatActivity
                 .into(movieImage);
     }
 
+    private void loadReviews() {
+        String json;
+        URL url = NetworkUtils.buildReviewsUrl(movieID);
+        try {
+             json = NetworkUtils.getJsonResponseFromHttpUrl(url);
+             
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+    }
+
     @Override
     public void loadFinished(final ArrayList<Trailers> trailersArrayList) {
-        final String BASE_YOUTUBE_URL = "https://m.youtube.com/watch/?v=";
 
         TrailerListAdapter trailerListAdapter = new TrailerListAdapter(trailersArrayList, new TrailerListAdapter.OnTrailerClickListener() {
             @Override
             public void onTrailerClick(int position) {
                 String youtubeKey = trailersArrayList.get(position).getKey();
-                Intent appIntent = new Intent(Intent.ACTION_VIEW, NetworkUtils.youtubeAppUri(youtubeKey));
-                Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(BASE_YOUTUBE_URL + youtubeKey));
+                Intent appIntent = new Intent(Intent.ACTION_VIEW, NetworkUtils.buildYoutubeAppUri(youtubeKey));
+                Intent webIntent = new Intent(Intent.ACTION_VIEW, NetworkUtils.buildYoutubeUri(youtubeKey));
 
                 try {
                     startActivity(appIntent);
@@ -143,8 +160,6 @@ public class MovieDetailActivity extends AppCompatActivity
             }
         });
 
-
         rvTrailerList.setAdapter(trailerListAdapter);
-
     }
 }

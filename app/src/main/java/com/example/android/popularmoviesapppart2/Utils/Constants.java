@@ -39,4 +39,8 @@ public class Constants {
     public static final String TRAILER_TRAILER = "Trailer";
     public static final String TRAILER_TEASER = "Teaser";
     public static final String TRAILER_TYPE = "type";
+
+    // Review
+    public static final String REVIEWS_AUTHOR = "author";
+    public static final String REVIEWS_CONTENT = "content";
 }

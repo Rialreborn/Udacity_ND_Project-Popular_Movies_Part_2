@@ -41,7 +41,7 @@ public class LoadMovieData extends AsyncTask<URL, Void, ArrayList<Movie>>{
         URL url = urls[0];
         ArrayList<Movie> movieArray = null;
         try {
-            movieArray = JsonUtils.getMovieList(NetworkUtils.getResponseFromHttpUrl(url));
+            movieArray = JsonUtils.getMovieList(NetworkUtils.getJsonResponseFromHttpUrl(url));
         } catch (IOException e) {
             System.out.println("FAILED TO EXTRACT JSON FROM URL: " + e);
         } catch (JSONException e) {

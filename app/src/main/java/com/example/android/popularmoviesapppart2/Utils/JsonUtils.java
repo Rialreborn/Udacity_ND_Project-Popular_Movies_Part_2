@@ -1,12 +1,14 @@
 package com.example.android.popularmoviesapppart2.Utils;
 
 import com.example.android.popularmoviesapppart2.Model.Movie;
+import com.example.android.popularmoviesapppart2.Model.Reviews;
 import com.example.android.popularmoviesapppart2.Model.Trailers;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
@@ -47,7 +49,8 @@ public class JsonUtils {
             if (
                     trailerDetails.getString(Constants.TRAILER_TYPE).equals(Constants.TRAILER_TRAILER)
                             ||
-                    trailerDetails.getString(Constants.TRAILER_TYPE).equals(Constants.TRAILER_TEASER)) {
+                    trailerDetails.getString(Constants.TRAILER_TYPE).equals(Constants.TRAILER_TEASER))
+            {
                 String trailerName = trailerDetails.optString(Constants.TRAILER_NAME, Constants.FAIL_TO_RETRIEVE);
                 String trailerKey = trailerDetails.optString(Constants.TRAILER_KEY, Constants.FAIL_TO_RETRIEVE);
                 trailerArray.add(new Trailers(trailerKey, trailerName));
@@ -55,5 +58,23 @@ public class JsonUtils {
         }
 
         return trailerArray;
+    }
+
+    public static ArrayList<Reviews> getReviewList(String json) throws JSONException {
+        ArrayList<Reviews> arrayList = new ArrayList<>();
+
+        JSONObject jsonObject = new JSONObject(json);
+        JSONArray jsonArray = jsonObject.getJSONArray(Constants.JSON_RESULTS);
+
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject reviewObject = jsonArray.getJSONObject(i);
+
+            String author = reviewObject.getString(Constants.REVIEWS_AUTHOR);
+            String content = reviewObject.getString(Constants.REVIEWS_CONTENT);
+
+            arrayList.add(new Reviews(author, content));
+        }
+
+        return arrayList;
     }
 }
