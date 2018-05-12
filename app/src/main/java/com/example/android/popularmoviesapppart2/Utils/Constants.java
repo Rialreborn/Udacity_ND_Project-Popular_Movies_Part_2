@@ -1,7 +1,7 @@
-package com.example.android.popularmoviesapp.Utils;
+package com.example.android.popularmoviesapppart2.Utils;
 
 
-import com.example.android.popularmoviesapp.BuildConfig;
+import com.example.android.popularmoviesapppart2.BuildConfig;
 
 public class Constants {
 
@@ -21,7 +21,10 @@ public class Constants {
     public static final String USER_RATING = "vote_average";
     public static final String RELEASE_DATE = "release_date";
     public static final String JSON_RESULTS = "results";
+    public static final String MOVIE_ID = "id";
     public static final String FAIL_TO_RETRIEVE = "Failed to Retrieve";
+    public static final String TRAILER_KEY = "key";
+    public static final String TRAILER_NAME = "name";
 
     // Detail Intent
     public static final String INTENT_TITLE = "title";
@@ -30,4 +33,10 @@ public class Constants {
     public static final String INTENT_RELEASE_DATE = "release_date";
     public static final String INTENT_PLOT = "plot";
     public static final String INTENT_BACKDROP_URL = "backdrop_url";
+    public static final String INTENT_MOVIE_ID = "intent_movie_id";
+
+    // Trailer
+    public static final String TRAILER_TRAILER = "Trailer";
+    public static final String TRAILER_TEASER = "Teaser";
+    public static final String TRAILER_TYPE = "type";
 }

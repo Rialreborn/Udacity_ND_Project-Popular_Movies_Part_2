@@ -1,4 +1,4 @@
-package com.example.android.popularmoviesapp;
+package com.example.android.popularmoviesapppart2;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -8,8 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.example.android.popularmoviesapp.Model.Movie;
-import com.example.android.popularmoviesapp.Utils.NetworkUtils;
+import com.example.android.popularmoviesapppart2.Model.Movie;
+import com.example.android.popularmoviesapppart2.Utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
     @Override
     public MovieHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(com.example.android.popularmoviesapp.R.layout.movie_poster_fragment, parent, false);
+                .inflate(R.layout.movie_poster_fragment, parent, false);
         return new MovieHolder(view);
     }
 
@@ -44,18 +44,17 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
         return mMovieArray.size();
     }
 
-    public interface OnItemClickListener {
-        void onItemClick(int position);
-    }
+
 
     public class MovieHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final View mView;
         public final ImageView mMoviePosterImage;
 
+
         public MovieHolder(View itemView) {
             super(itemView);
             mView = itemView;
-            mMoviePosterImage = itemView.findViewById(com.example.android.popularmoviesapp.R.id.rv_movie_list_image);
+            mMoviePosterImage = itemView.findViewById(R.id.rv_movie_list_image);
             mView.setOnClickListener(this);
         }
 
@@ -71,5 +70,9 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
             int position = getAdapterPosition();
             mListener.onItemClick(position);
         }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
     }
 }

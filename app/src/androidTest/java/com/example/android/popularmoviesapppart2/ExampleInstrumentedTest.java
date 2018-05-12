@@ -1,4 +1,4 @@
-package com.example.android.popularmoviesapp;
+package com.example.android.popularmoviesapppart2;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

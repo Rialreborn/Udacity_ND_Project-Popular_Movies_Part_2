@@ -1,4 +1,4 @@
-package com.example.android.popularmoviesapp.Utils;
+package com.example.android.popularmoviesapppart2.Utils;
 
 import android.net.Uri;
 
@@ -14,6 +14,7 @@ public class NetworkUtils {
 
     // Constants
     private static final String BASE_URL = "https://api.themoviedb.org/3/movie/";
+    private static final String VIDEOS = "/videos";
     private static final String API = "api_key";
 
     private static final String LANGUAGE = "language";
@@ -21,12 +22,27 @@ public class NetworkUtils {
     private static final String PAGE = "page";
     private static final String PAGE_NUMBER = "1";
 
+    // Youtube
+    private static final String BASE_YOUTUBE_URL = "https://youtube.com/watch/";
+    private static final String BASE_YOUTUBE_IMAGE_URL = "https://img.youtube.com/vi/";
+    private static final String BASE_YOUTUBE_URL_APP = "vnd.youtube:";
+    private static final String IMAGE_NUMBER = "/0.jpg";
+    private static final String VIDEO = "v";
+
+
     // Image related
     private static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
     private static final String IMAGE_SIZE_W185 = "w185";
     private static final String IMAGE_SIZE_W342 = "w342";
 
+    public static URL buildTrailersUrl(int id) {
+        Uri builtUri = Uri.parse(BASE_URL + id + VIDEOS).buildUpon()
+                .appendQueryParameter(API, Constants.API_KEY)
+                .appendQueryParameter(LANGUAGE, LAN_EN_US)
+                .build();
 
+        return convertUriToUrl(builtUri);
+    }
 
     public static URL buildMoviesUrl(String movieOrder) {
         Uri builtUri = Uri.parse(BASE_URL + movieOrder).buildUpon()
@@ -35,10 +51,31 @@ public class NetworkUtils {
                 .appendQueryParameter(PAGE, PAGE_NUMBER)
                 .build();
 
+        return convertUriToUrl(builtUri);
+    }
+
+    public static Uri buildYoutubeUrl(String key) {
+
+        return Uri.parse(BASE_YOUTUBE_URL).buildUpon()
+                .appendQueryParameter(VIDEO, key)
+                .build();
+    }
+
+    public static Uri youtubeAppUri(String key) {
+
+        return Uri.parse(BASE_YOUTUBE_URL_APP + key);
+    }
+
+    public static Uri buildYoutubeThumbnailUri(String key) {
+
+        return Uri.parse(BASE_YOUTUBE_IMAGE_URL + key + IMAGE_NUMBER);
+    }
+
+    private static URL convertUriToUrl(Uri uri) {
         URL url = null;
 
         try {
-            url = new URL(builtUri.toString());
+            url = new URL(uri.toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

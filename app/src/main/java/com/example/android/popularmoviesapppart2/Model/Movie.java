@@ -1,4 +1,4 @@
-package com.example.android.popularmoviesapp.Model;
+package com.example.android.popularmoviesapppart2.Model;
 
 
 public class Movie {
@@ -9,14 +9,17 @@ public class Movie {
     private final double mUserRating;
     private final String mReleaseDate;
     private final String mMovieBackdrop;
+    private final int mMovieId;
 
-    public Movie(String title, String imageUrl, String plot, double userRating, String releaseDate, String movieBackdrop) {
+    public Movie(String title, String imageUrl, String plot, double userRating, String releaseDate, String movieBackdrop,
+                 int movieId) {
         this.mTitle = title;
         this.mImageUrl = imageUrl;
         this.mPlot = plot;
         this.mUserRating = userRating;
         this.mReleaseDate = releaseDate;
         this.mMovieBackdrop = movieBackdrop;
+        this.mMovieId = movieId;
     }
 
     public String getTitle() {
@@ -40,4 +43,6 @@ public class Movie {
     }
 
     public String getMovieBackdrop() {return  mMovieBackdrop; }
+
+    public int getMovieId() {return mMovieId;}
 }

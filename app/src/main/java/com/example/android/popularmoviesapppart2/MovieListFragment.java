@@ -1,4 +1,4 @@
-package com.example.android.popularmoviesapp;
+package com.example.android.popularmoviesapppart2;
 
 import android.content.Context;
 import android.content.Intent;
@@ -19,12 +19,11 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.android.popularmoviesapp.Model.Movie;
-import com.example.android.popularmoviesapp.Utils.AsyncTaskCompleteListener;
-import com.example.android.popularmoviesapp.Utils.AsyncTaskPreExecuteListener;
-import com.example.android.popularmoviesapp.Utils.Constants;
-import com.example.android.popularmoviesapp.Utils.LoadMovieData;
-import com.example.android.popularmoviesapp.Utils.NetworkUtils;
+import com.example.android.popularmoviesapppart2.Model.Movie;
+import com.example.android.popularmoviesapppart2.MovieDetails.MovieDetailActivity;
+import com.example.android.popularmoviesapppart2.Utils.Constants;
+import com.example.android.popularmoviesapppart2.Utils.LoadMovieData;
+import com.example.android.popularmoviesapppart2.Utils.NetworkUtils;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -33,15 +32,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class MovieListFragment extends Fragment {
+public class MovieListFragment extends Fragment
+        implements
+        LoadMovieData.BeforeTaskCompleteInterface,
+        LoadMovieData.AfterTaskCompleteInterface
+
+{
 
     private String mMovieOrder;
 
-    private ArrayList<Movie> moviesList;
-
-    @BindView(com.example.android.popularmoviesapp.R.id.recycler_view)
+    @BindView(com.example.android.popularmoviesapppart2.R.id.recycler_view)
     RecyclerView recyclerView;
-    @BindView(com.example.android.popularmoviesapp.R.id.progress_bar)
+    @BindView(com.example.android.popularmoviesapppart2.R.id.progress_bar)
     ProgressBar progressBar;
 
 
@@ -57,7 +59,7 @@ public class MovieListFragment extends Fragment {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mMovieOrder = sharedPreferences.getString(Constants.MOVIE_SORT_ORDER_KEY, Constants.MOVIE_SORT_ORDER_POPULAR);
 
-        final View rootView = inflater.inflate(com.example.android.popularmoviesapp.R.layout.movie_list_fragment, container, false);
+        final View rootView = inflater.inflate(com.example.android.popularmoviesapppart2.R.layout.movie_list_fragment, container, false);
 
         ButterKnife.bind(MovieListFragment.this, rootView);
 
@@ -75,16 +77,16 @@ public class MovieListFragment extends Fragment {
         ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo info = null;
-            if (connectivityManager != null) {
-                info = connectivityManager.getActiveNetworkInfo();
-            }
+        if (connectivityManager != null) {
+            info = connectivityManager.getActiveNetworkInfo();
+        }
 
-            if (info != null && info.isConnectedOrConnecting()) {
-                URL url = NetworkUtils.buildMoviesUrl(mMovieOrder);
-                new LoadMovieData(new FetchMyDataTaskCompleteListener(), new FetchMyDataTaskCompleteListener()).execute(url);
-            } else {
-                Toast.makeText(getActivity(), getString(R.string.no_network), Toast.LENGTH_SHORT ).show();
-            }
+        if (info != null && info.isConnectedOrConnecting()) {
+            URL url = NetworkUtils.buildMoviesUrl(mMovieOrder);
+            new LoadMovieData(this, this).execute(url);
+        } else {
+            Toast.makeText(getActivity(), getString(R.string.no_network), Toast.LENGTH_SHORT).show();
+        }
 
 
     }
@@ -113,37 +115,47 @@ public class MovieListFragment extends Fragment {
     }
 
 
+    /**
+     * Override method for LoadMovieData, before Async has run
+     * Show Progress Bar
+     */
+    //
+    @Override
+    public void beforeTaskComplete() {
+        showProgressBar();
+    }
 
-    public class FetchMyDataTaskCompleteListener implements AsyncTaskCompleteListener<ArrayList<Movie>>, AsyncTaskPreExecuteListener
-    {
-        @Override
-        public void onTaskComplete(final ArrayList<Movie> result) {
-            hideProgressBar();
+    /**
+     * Override method for LoadMovieData, after AsyncTask has completed
+     * Hide Progress Bar
+     * Set Adapter to RV
+     *
+     * @param result - The ArrayList<Movie> filled with data after AsyncTask has run
+     */
+    @Override
+    public void afterTaskComplete(final ArrayList<Movie> result) {
+        hideProgressBar();
 
-            MovieListAdapter movieListAdapter = new MovieListAdapter(result, new MovieListAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(int position) {
-                    Movie movie = result.get(position);
-                    Intent intent = new Intent(getContext(), MovieDetailActivity.class);
+        MovieListAdapter movieListAdapter = new MovieListAdapter(result, new MovieListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                Movie movie = result.get(position);
+                Intent intent = new Intent(getContext(), MovieDetailActivity.class);
                 intent.putExtra(Constants.INTENT_TITLE, movie.getTitle())
                         .putExtra(Constants.INTENT_IMAGE_URL, movie.getImageUrl())
                         .putExtra(Constants.INTENT_USER_RATING, movie.getUserRating())
                         .putExtra(Constants.INTENT_RELEASE_DATE, movie.getReleaseDate())
                         .putExtra(Constants.INTENT_PLOT, movie.getPlot())
-                        .putExtra(Constants.INTENT_BACKDROP_URL, movie.getMovieBackdrop());
+                        .putExtra(Constants.INTENT_BACKDROP_URL, movie.getMovieBackdrop())
+                    .putExtra(Constants.INTENT_MOVIE_ID, movie.getMovieId())
+                ;
                 startActivity(intent);
-                }
-            });
+            }
+        });
 
-            recyclerView.setAdapter(movieListAdapter);
-        }
-
-        @Override
-        public void beforeAsyncExecute() {
-            showProgressBar();
-        }
+        recyclerView.setAdapter(movieListAdapter);
     }
-    }
+}
 
 
 
