@@ -1,6 +1,14 @@
 package com.example.android.popularmoviesapppart2.Utils;
 
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.style.ImageSpan;
+import android.widget.TextView;
 
 import com.example.android.popularmoviesapppart2.Model.Reviews;
 
@@ -9,6 +17,7 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by Zane on 12/05/2018.
@@ -49,4 +58,5 @@ public class LoadReviews extends AsyncTask<URL, Void, ArrayList<Reviews>> {
     public interface OnReviewsLoadFinished {
         void reviewsFinished(ArrayList<Reviews> reviewsArrayList);
     }
+
 }

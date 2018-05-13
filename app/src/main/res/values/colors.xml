@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#E50914</color>
-    <color name="colorPrimaryDark">#7F0000</color>
-    <color name="colorPrimaryDarker">#4C0000</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="mainBackground">#151212</color>
+    <color name="colorPrimary" >#b71c1c</color>
+    <color name="colorPrimaryLight">#f05545</color>
+    <color name="colorPrimaryDark">#8e0000</color>
+    <color name="colorPrimaryDarker">#7f0000</color>
+    <color name="colorAccent">#212121</color>
+    <color name="colorAccentLight">#484848</color>
+    <color name="colorAccentDark">#000000</color>
+
+    <color name="colorMainDetailsText">#ffffff</color>
+    <color name="colorDetailsText">#D9ffffff</color>
+    <color name="colorMinorDetailsText">#80ffffff</color>
 
     <!-- Menu Colors -->
-    <color name="menuBackground">#151212</color>
-    <color name="colorPrimaryRipple">#99E50914</color>
-    <color name="white">#FFFFFF</color>
+    <color name="menuBackground">@color/colorPrimary</color>
+    <color name="colorMenuActiveText">#ffffff</color>
+    <color name="colorMenuInactiveText">@color/colorPrimaryDarker</color>
+
+    <!-- Main Colors -->
+    <color name="mainBackground">@color/colorAccent</color>
+    <color name="detailBackground">@color/colorAccent</color>
+    <color name="trailerBackground">@color/colorAccentLight</color>
+    <color name="floatingActionButtonReviews">@color/colorAccent</color>
 
 </resources>

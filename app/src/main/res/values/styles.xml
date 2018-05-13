@@ -6,47 +6,65 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorControlHighlight">@color/colorPrimaryRipple</item>
     </style>
 
-    <!-- Menu -->
-    <!-- Menu Active Text -->
-    <style name="menuActiveText" parent="android:Widget.TextView">
+    <!-- Bottom Menu - Theme-->
+    <style name="bottomNavigationMenu">
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Bottom Menu - Style - Ripple -->
+    <style name="ripple">
+        <item name="android:background">@color/menuBackground</item>
+        <item name="itemBackground">@drawable/ripple</item>
+        <item name="itemTextColor">@drawable/menu_selector</item>
+        <item name="itemIconTint">@drawable/menu_selector</item>
     </style>
 
 
     <!-- Movie Detail Text Themes-->
     <!-- Movie Detail Titles -->
-    <style name="movieDetailSubHeaderText" parent="Base.TextAppearance.AppCompat.Subhead">
+    <style name="movieDetailSubHeaderText">
         <item name="android:textColor">@color/colorPrimary</item>
-        <item name="android:textSize">22sp</item>
-        <item name="android:layout_marginTop">6dp</item>
-        <item name="android:layout_marginStart">4dp</item>
-        <item name="android:layout_marginLeft">4dp</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginLeft">8dp</item>
 
     </style>
 
-    <!-- Movie Detail Body -->
-    <style name="movieDetailBodyText" parent="Base.TextAppearance.AppCompat.Body1">
+    <!-- Movie Main Details (Rating, Release date) -->
+    <style name="movieMainDetailText">
         <item name="android:textSize">18sp</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:layout_marginTop">1dp</item>
-        <item name="android:layout_marginStart">4dp</item>
-        <item name="android:layout_marginLeft">4dp</item>
+        <item name="android:textColor">@color/colorMainDetailsText</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginLeft">8dp</item>
         <item name="android:layout_marginBottom">6dp</item>
     </style>
 
-    <!-- Movie Detail Author-->
-    <style name="movieDetailPlotText" parent="Base.TextAppearance.AppCompat.Body1">
+    <!-- Movie Details (Plot etc) -->
+    <style name="movieDetailText">
         <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:textColor">@color/colorDetailsText</item>
+        <item name="android:layout_marginTop">2dp</item>
         <item name="android:layout_marginStart">8dp</item>
         <item name="android:layout_marginLeft">8dp</item>
         <item name="android:layout_marginRight">8dp</item>
         <item name="android:layout_marginEnd">8dp</item>
-        <item name="android:layout_marginBottom">2dp</item>
+    </style>
+
+    <!-- Movie Details (Trailer Name) -->
+    <style name="movieMinorDetailText">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/colorDetailsText</item>
+    </style>
+
+    <!-- Movie Details (Review) -->
+    <style name="movieReviewAuthor">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorDetailsText</item>
     </style>
 
 

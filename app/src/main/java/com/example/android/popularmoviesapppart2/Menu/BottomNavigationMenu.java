@@ -77,4 +77,8 @@ public class BottomNavigationMenu extends Fragment {
                     .commit();
         }
     }
+
+    private void setColors(MenuItem menuItem) {
+
+    }
 }

@@ -15,7 +15,7 @@
         android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
         tools:context="com.example.android.popularmoviesapppart2.MovieListFragment"
-        tools:listitem="@layout/movie_poster_fragment" />
+        tools:listitem="@layout/movie_poster_rv_list_item" />
 
 
     <ProgressBar

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/mainBackground"
+    android:background="@color/detailBackground"
     android:fitsSystemWindows="true"
     tools:context=".MovieDetails.MovieDetailActivity"
     tools:ignore="Overdraw">
@@ -63,7 +63,8 @@
                     android:id="@+id/movie_image"
                     android:layout_width="wrap_content"
                     android:layout_height="220dp"
-                    android:layout_margin="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginStart="8dp"
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/movie_details_poster_content_description"
                     android:scaleType="centerCrop" />
@@ -81,7 +82,7 @@
 
                     <TextView
                         android:id="@+id/user_rating_tv"
-                        style="@style/movieDetailBodyText"
+                        style="@style/movieMainDetailText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -89,7 +90,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginEnd="8dp"
-                        android:background="@color/colorPrimary" />
+                        android:layout_marginStart="8dp"
+                        android:background="@color/colorPrimaryDark" />
 
                     <TextView
                         style="@style/movieDetailSubHeaderText"
@@ -99,12 +101,7 @@
 
                     <TextView
                         android:id="@+id/release_date_tv"
-                        style="@style/movieDetailBodyText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:id="@+id/movie_id"
+                        style="@style/movieMainDetailText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -114,29 +111,51 @@
             </LinearLayout>
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/movieDetailSubHeaderText"
+                android:text="@string/plot" />
+
+            <TextView
                 android:id="@+id/plot_tv"
-                style="@style/movieDetailPlotText"
+                style="@style/movieDetailText"
+                android:background="@drawable/rounded_corner"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/movieDetailSubHeaderText"
+                android:text="@string/trailers" />
 
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_trailerList"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="2dp"
                 android:scrollbars="vertical" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Reviews" />
+                style="@style/movieDetailSubHeaderText"
+                android:text="@string/reviews" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_reviews"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp" />
+                android:layout_marginTop="2dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/no_reviews_found"
+                android:text="@string/no_reviews_found"
+                android:visibility="invisible"
+                style="@style/movieMainDetailText"/>
 
 
         </LinearLayout>

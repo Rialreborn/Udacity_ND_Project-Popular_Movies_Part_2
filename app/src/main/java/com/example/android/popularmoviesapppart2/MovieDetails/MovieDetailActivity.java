@@ -5,16 +5,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
-import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -43,17 +41,27 @@ import butterknife.ButterKnife;
 
 
 public class MovieDetailActivity extends AppCompatActivity
-    implements  OnTrailerLoadFinished,
-                OnReviewsLoadFinished {
+        implements OnTrailerLoadFinished,
+        OnReviewsLoadFinished {
 
-    @BindView(R.id.movie_backdrop) ImageView backdropImage;
-    @BindView(R.id.movie_image) ImageView movieImage;
-    @BindView(R.id.user_rating_tv) TextView userRatingTv;
-    @BindView(R.id.release_date_tv) TextView releaseDateTv;
-    @BindView(R.id.plot_tv) TextView plotTv;
-    @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.rv_trailerList) RecyclerView rvTrailerList;
-    @BindView(R.id.rv_reviews) RecyclerView rvReviews;
+    @BindView(R.id.movie_backdrop)
+    ImageView backdropImage;
+    @BindView(R.id.movie_image)
+    ImageView movieImage;
+    @BindView(R.id.user_rating_tv)
+    TextView userRatingTv;
+    @BindView(R.id.release_date_tv)
+    TextView releaseDateTv;
+    @BindView(R.id.plot_tv)
+    TextView plotTv;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.rv_trailerList)
+    RecyclerView rvTrailerList;
+    @BindView(R.id.rv_reviews)
+    RecyclerView rvReviews;
+    @BindView(R.id.no_reviews_found)
+    TextView tvNoReviews;
 
     int movieID;
 
@@ -83,13 +91,10 @@ public class MovieDetailActivity extends AppCompatActivity
         /*
          * Set up Trailer RV
          */
-        SnapHelper trailerHelper = new LinearSnapHelper();
         URL trailerUrl = NetworkUtils.buildTrailersUrl(movieID);
         new LoadTrailerData(this).execute(trailerUrl);
         LinearLayoutManager layoutManager =
                 new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        trailerHelper.attachToRecyclerView(rvTrailerList);
-        rvTrailerList.addItemDecoration(new DividerItemDecoration(MovieDetailActivity.this, layoutManager.HORIZONTAL));
         rvTrailerList.setHasFixedSize(true);
         rvTrailerList.setLayoutManager(layoutManager);
 
@@ -102,7 +107,6 @@ public class MovieDetailActivity extends AppCompatActivity
         LinearLayoutManager reviewLayoutManager =
                 new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         reviewsHelper.attachToRecyclerView(rvReviews);
-        rvReviews.addItemDecoration(new DividerItemDecoration(MovieDetailActivity.this, layoutManager.HORIZONTAL));
         rvReviews.setHasFixedSize(true);
         rvReviews.setLayoutManager(reviewLayoutManager);
 
@@ -110,6 +114,7 @@ public class MovieDetailActivity extends AppCompatActivity
          * Update Toolbar and Window
          */
         toolbar.setTitle(intent.getStringExtra(Constants.INTENT_TITLE));
+
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -158,21 +163,44 @@ public class MovieDetailActivity extends AppCompatActivity
 
                 try {
                     startActivity(appIntent);
-                } catch (ActivityNotFoundException e){
+                } catch (ActivityNotFoundException e) {
                     startActivity(webIntent);
                 }
             }
         });
 
-        rvTrailerList.setAdapter(trailerListAdapter);
+
+            rvTrailerList.setAdapter(trailerListAdapter);
     }
 
     @Override
-    public void reviewsFinished(ArrayList<Reviews> reviewsArrayList) {
+    public void reviewsFinished(final ArrayList<Reviews> reviewsArrayList) {
+
+        ReviewListAdapter reviewListAdapter = new ReviewListAdapter(reviewsArrayList, new ReviewListAdapter.OnReviewClickListener() {
+            @Override
+            public void onReviewClicked(TextView reviewContent, FloatingActionButton imageButton) {
+
+                if (reviewContent.getLineCount() == 5) {
+                    reviewContent.setMaxLines(Integer.MAX_VALUE);
+                    imageButton.setRotation(180);
+                } else if (reviewContent.getLineCount() < 5) {
+                    imageButton.setVisibility(View.GONE);
+                } else {
+                    reviewContent.setMaxLines(5);
+                    imageButton.setRotation(0);
+                }
 
 
-                ReviewListAdapter reviewListAdapter = new ReviewListAdapter(reviewsArrayList);
-        rvReviews.setAdapter(reviewListAdapter);
+            }
+        });
+
+        if (reviewListAdapter.getItemCount() == 0) {
+            rvReviews.setVisibility(View.GONE);
+            tvNoReviews.setVisibility(View.VISIBLE);
+
+        } else {
+            rvReviews.setAdapter(reviewListAdapter);
+        }
 
     }
 }

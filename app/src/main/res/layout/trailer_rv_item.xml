@@ -4,14 +4,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
+    android:background="@drawable/rounded_corner"
+    android:layout_marginStart="8dp"
+    android:layout_marginLeft="8dp"
     android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/iv_trailer_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="2dp"
         android:adjustViewBounds="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,11 +24,11 @@
 
     <TextView
         android:id="@+id/tv_trailer_name"
+        style="@style/movieMinorDetailText"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="2dp"
         android:singleLine="false"
-        android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@+id/iv_trailer_image"
         app:layout_constraintTop_toBottomOf="@+id/iv_trailer_image"
         tools:text="trailer name" />
