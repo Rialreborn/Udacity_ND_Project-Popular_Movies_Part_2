@@ -9,7 +9,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Array;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class JsonUtils {
@@ -20,16 +23,27 @@ public class JsonUtils {
 
         JSONObject jsonObject = new JSONObject(json);
         JSONArray jsonArray = jsonObject.getJSONArray(Constants.JSON_RESULTS);
+        SimpleDateFormat sdf;
 
         for (int i = 0; i < jsonArray.length(); i++) {
+            sdf = new SimpleDateFormat("yyyy-MM-dd");
             JSONObject movieDetails = (JSONObject) jsonArray.get(i);
             String movieTitle = movieDetails.optString(Constants.TITLE, Constants.FAIL_TO_RETRIEVE);
             String imageURL = movieDetails.optString(Constants.POSTER_URL, Constants.FAIL_TO_RETRIEVE);
             String plot = movieDetails.optString(Constants.PLOT, Constants.FAIL_TO_RETRIEVE);
-            String releaseDate = movieDetails.optString(Constants.RELEASE_DATE, Constants.FAIL_TO_RETRIEVE);
             double userRating = movieDetails.optDouble(Constants.USER_RATING, 0.0);
             String movieBackdrop = movieDetails.optString(Constants.BACKDROP_POSTER, Constants.FAIL_TO_RETRIEVE);
             int movieId = movieDetails.optInt(Constants.MOVIE_ID, 0);
+
+            String releaseDate = movieDetails.optString(Constants.RELEASE_DATE, Constants.FAIL_TO_RETRIEVE);
+            try {
+                Date newDate = sdf.parse(releaseDate);
+                sdf = new SimpleDateFormat("dd-MMM-yyyy");
+                releaseDate = sdf.format(newDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
             movieArray.add(new Movie(movieTitle, imageURL, plot, userRating, releaseDate, movieBackdrop, movieId));
         }
 

@@ -41,42 +41,44 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.Re
     }
 
     @Override
+    public void onViewAttachedToWindow(@NonNull ReviewViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+    }
+
+    @Override
     public int getItemCount() {
         return mReviewArray.size();}
 
 
-    public class ReviewViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ReviewViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView tvAuthor;
         TextView tvContent;
-        FloatingActionButton imExpandReview;
 
         public ReviewViewHolder(View itemView) {
             super(itemView);
             tvAuthor = itemView.findViewById(R.id.tv_author);
             tvContent = itemView.findViewById(R.id.tv_review_content);
-            imExpandReview = itemView.findViewById(R.id.floatingActionButton);
-
-            imExpandReview.setOnClickListener(this);
-
-
+            itemView.setOnClickListener(this);
         }
 
         void bind(int position) {
             tvAuthor.setText(mReviewArray.get(position).getAuthor());
             String content = mReviewArray.get(position).getContent();
             tvContent.setText(content.trim());
+            tvContent.setMinLines(5);
+            tvContent.setMaxLines(5);
         }
 
         @Override
         public void onClick(View v) {
-            mOnReviewClickListener.onReviewClicked(tvContent, imExpandReview);
+            mOnReviewClickListener.onReviewClicked(tvContent);
         }
 
     }
 
     interface OnReviewClickListener {
-        void onReviewClicked(TextView reviewContent, FloatingActionButton imageButton);
+        void onReviewClicked(TextView reviewContent);
     }
 
 }

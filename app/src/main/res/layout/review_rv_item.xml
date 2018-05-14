@@ -8,6 +8,7 @@
     android:layout_marginStart="6dp"
     android:layout_marginEnd="6dp"
     android:layout_marginBottom="32dp"
+    android:animateLayoutChanges="true"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
@@ -36,36 +37,19 @@
 
     <TextView
         android:id="@+id/tv_review_content"
-        android:layout_width="260dp"
+        android:layout_width="240dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="4dp"
+        android:minLines="5"
         android:ellipsize="end"
         android:maxLines="5"
-        style="@style/movieMinorDetailText"
+        style="@style/trailerNameTextStyle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/tv_author_title"
         app:layout_constraintTop_toBottomOf="@+id/tv_author_title"
         tools:text="Was Great!" />
-
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingActionButton"
-        android:layout_width="26dp"
-        android:layout_height="26dp"
-        android:layout_marginBottom="12dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:scaleType="centerInside"
-        android:tint="@android:color/white"
-        app:backgroundTint="@color/colorPrimary"
-        app:borderWidth="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/tv_review_content"
-        app:layout_constraintTop_toBottomOf="@+id/tv_review_content"
-        app:rippleColor="@color/colorPrimaryDarker"
-        app:srcCompat="@android:drawable/arrow_up_float" />
 
 
 </android.support.constraint.ConstraintLayout>

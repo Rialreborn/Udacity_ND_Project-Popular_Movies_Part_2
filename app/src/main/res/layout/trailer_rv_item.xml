@@ -24,7 +24,7 @@
 
     <TextView
         android:id="@+id/tv_trailer_name"
-        style="@style/movieMinorDetailText"
+        style="@style/trailerNameTextStyle"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"

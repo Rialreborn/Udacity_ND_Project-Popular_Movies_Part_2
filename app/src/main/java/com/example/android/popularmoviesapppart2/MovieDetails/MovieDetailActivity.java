@@ -1,5 +1,7 @@
 package com.example.android.popularmoviesapppart2.MovieDetails;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
@@ -44,7 +46,7 @@ public class MovieDetailActivity extends AppCompatActivity
         implements OnTrailerLoadFinished,
         OnReviewsLoadFinished {
 
-    @BindView(R.id.movie_backdrop)
+    @Nullable @BindView(R.id.movie_backdrop)
     ImageView backdropImage;
     @BindView(R.id.movie_image)
     ImageView movieImage;
@@ -54,7 +56,7 @@ public class MovieDetailActivity extends AppCompatActivity
     TextView releaseDateTv;
     @BindView(R.id.plot_tv)
     TextView plotTv;
-    @BindView(R.id.toolbar)
+    @Nullable @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.rv_trailerList)
     RecyclerView rvTrailerList;
@@ -62,6 +64,8 @@ public class MovieDetailActivity extends AppCompatActivity
     RecyclerView rvReviews;
     @BindView(R.id.no_reviews_found)
     TextView tvNoReviews;
+    @Nullable @BindView(R.id.title)
+            TextView tvMovieTitle;
 
     int movieID;
 
@@ -101,19 +105,21 @@ public class MovieDetailActivity extends AppCompatActivity
         /*
          * Set up Reviews RV
          */
-        SnapHelper reviewsHelper = new LinearSnapHelper();
         URL reviewUrl = NetworkUtils.buildReviewsUrl(movieID);
         new LoadReviews(this).execute(reviewUrl);
         LinearLayoutManager reviewLayoutManager =
                 new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        reviewsHelper.attachToRecyclerView(rvReviews);
         rvReviews.setHasFixedSize(true);
         rvReviews.setLayoutManager(reviewLayoutManager);
 
         /*
          * Update Toolbar and Window
          */
-        toolbar.setTitle(intent.getStringExtra(Constants.INTENT_TITLE));
+        if (toolbar != null) {
+            toolbar.setTitle(intent.getStringExtra(Constants.INTENT_TITLE));
+        } else {
+            tvMovieTitle.setText(intent.getStringExtra(Constants.INTENT_TITLE));
+        }
 
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -143,9 +149,11 @@ public class MovieDetailActivity extends AppCompatActivity
         /**
          * Load Images
          */
-        Picasso.with(this)
-                .load(backdropImageUri)
-                .into(backdropImage);
+        if (backdropImage != null) {
+            Picasso.with(this)
+                    .load(backdropImageUri)
+                    .into(backdropImage);
+        }
         Picasso.with(this)
                 .load(moviePosterUri)
                 .into(movieImage);
@@ -170,7 +178,7 @@ public class MovieDetailActivity extends AppCompatActivity
         });
 
 
-            rvTrailerList.setAdapter(trailerListAdapter);
+        rvTrailerList.setAdapter(trailerListAdapter);
     }
 
     @Override
@@ -178,29 +186,45 @@ public class MovieDetailActivity extends AppCompatActivity
 
         ReviewListAdapter reviewListAdapter = new ReviewListAdapter(reviewsArrayList, new ReviewListAdapter.OnReviewClickListener() {
             @Override
-            public void onReviewClicked(TextView reviewContent, FloatingActionButton imageButton) {
+            public void onReviewClicked(final TextView reviewContent) {
 
                 if (reviewContent.getLineCount() == 5) {
-                    reviewContent.setMaxLines(Integer.MAX_VALUE);
-                    imageButton.setRotation(180);
-                } else if (reviewContent.getLineCount() < 5) {
-                    imageButton.setVisibility(View.GONE);
+                    ValueAnimator animator = ValueAnimator.ofInt(5, 100).setDuration(400);
+                    animateExpansion(animator, reviewContent);
                 } else {
-                    reviewContent.setMaxLines(5);
-                    imageButton.setRotation(0);
+                    ValueAnimator animator = ValueAnimator.ofInt(100, 5).setDuration(400);
+                    animateExpansion(animator, reviewContent);
                 }
-
-
             }
-        });
+        }
+        );
 
         if (reviewListAdapter.getItemCount() == 0) {
             rvReviews.setVisibility(View.GONE);
             tvNoReviews.setVisibility(View.VISIBLE);
-
         } else {
             rvReviews.setAdapter(reviewListAdapter);
         }
 
+    }
+
+    public void animateExpansion(ValueAnimator animator, final TextView reviewContent) {
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            int lastValue = -1;
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int value = (int) animation.getAnimatedValue();
+
+                if (value == lastValue) {
+                    return;
+                }
+
+                lastValue = value;
+
+                reviewContent.setMaxLines(value);
+            }
+        });
+        animator.start();
     }
 }
