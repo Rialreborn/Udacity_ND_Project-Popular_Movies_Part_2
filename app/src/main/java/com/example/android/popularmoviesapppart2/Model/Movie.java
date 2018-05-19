@@ -1,6 +1,9 @@
 package com.example.android.popularmoviesapppart2.Model;
 
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 public class Movie {
 
     private final String mTitle;
@@ -10,6 +13,7 @@ public class Movie {
     private final String mReleaseDate;
     private final String mMovieBackdrop;
     private final int mMovieId;
+    private final byte[] mPoster;
 
     public Movie(String title, String imageUrl, String plot, double userRating, String releaseDate, String movieBackdrop,
                  int movieId) {
@@ -20,6 +24,19 @@ public class Movie {
         this.mReleaseDate = releaseDate;
         this.mMovieBackdrop = movieBackdrop;
         this.mMovieId = movieId;
+        this.mPoster = null;
+    }
+
+    public Movie(String title, String plot, double userRating, String releaseDate,
+                 int movieId, byte[] poster) {
+        this.mTitle = title;
+        this.mPlot = plot;
+        this.mUserRating = userRating;
+        this.mReleaseDate = releaseDate;
+        this.mMovieBackdrop = null;
+        this.mMovieId = movieId;
+        this.mPoster = poster;
+        this.mImageUrl = null;
     }
 
     public String getTitle() {
@@ -43,6 +60,10 @@ public class Movie {
     }
 
     public String getMovieBackdrop() {return  mMovieBackdrop; }
+
+    public Bitmap getMoviePoster() {
+        return BitmapFactory.decodeByteArray(mPoster, 0, mPoster.length);
+    }
 
     public int getMovieId() {return mMovieId;}
 }

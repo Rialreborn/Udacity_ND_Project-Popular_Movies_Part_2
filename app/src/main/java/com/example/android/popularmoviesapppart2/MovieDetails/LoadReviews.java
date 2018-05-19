@@ -1,4 +1,4 @@
-package com.example.android.popularmoviesapppart2.Utils;
+package com.example.android.popularmoviesapppart2.MovieDetails;
 
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -11,6 +11,8 @@ import android.text.style.ImageSpan;
 import android.widget.TextView;
 
 import com.example.android.popularmoviesapppart2.Model.Reviews;
+import com.example.android.popularmoviesapppart2.Utils.JsonUtils;
+import com.example.android.popularmoviesapppart2.Utils.NetworkUtils;
 
 import org.json.JSONException;
 

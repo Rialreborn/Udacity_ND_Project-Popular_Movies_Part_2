@@ -1,20 +1,20 @@
 package com.example.android.popularmoviesapppart2.MovieDetails;
 
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SnapHelper;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -24,17 +24,18 @@ import android.widget.Toast;
 
 import android.support.v7.widget.Toolbar;
 
+import com.example.android.popularmoviesapppart2.Database.MovieContract;
+import com.example.android.popularmoviesapppart2.Database.MovieContract.MovieEntry;
 import com.example.android.popularmoviesapppart2.Model.Reviews;
 import com.example.android.popularmoviesapppart2.Model.Trailers;
 import com.example.android.popularmoviesapppart2.R;
 import com.example.android.popularmoviesapppart2.Utils.Constants;
-import com.example.android.popularmoviesapppart2.Utils.LoadReviews;
-import com.example.android.popularmoviesapppart2.Utils.LoadReviews.OnReviewsLoadFinished;
-import com.example.android.popularmoviesapppart2.Utils.LoadTrailerData;
-import com.example.android.popularmoviesapppart2.Utils.LoadTrailerData.OnTrailerLoadFinished;
+import com.example.android.popularmoviesapppart2.MovieDetails.LoadReviews.OnReviewsLoadFinished;
+import com.example.android.popularmoviesapppart2.MovieDetails.LoadTrailerData.OnTrailerLoadFinished;
 import com.example.android.popularmoviesapppart2.Utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -66,8 +67,12 @@ public class MovieDetailActivity extends AppCompatActivity
     TextView tvNoReviews;
     @Nullable @BindView(R.id.title)
             TextView tvMovieTitle;
+    @BindView(R.id.add_to_favourites)
+            ImageView ivFavourites;
 
     int movieID;
+    Intent mIntent;
+    boolean isFavourited;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,20 +82,20 @@ public class MovieDetailActivity extends AppCompatActivity
 
         ButterKnife.bind(MovieDetailActivity.this);
 
-        Intent intent = getIntent();
-        if (intent == null) {
+        mIntent = getIntent();
+        if (mIntent == null) {
             closeOnNullIntent();
         }
 
         /*
          * Init. Movie ID
          */
-        movieID = intent.getIntExtra(Constants.INTENT_MOVIE_ID, 0);
+        movieID = mIntent.getIntExtra(Constants.INTENT_MOVIE_ID, 0);
 
         /*
-         * Populate Views with intent data
+         * Populate Views with mIntent data
          */
-        populateViews(intent);
+        populateViews();
 
         /*
          * Set up Trailer RV
@@ -116,15 +121,17 @@ public class MovieDetailActivity extends AppCompatActivity
          * Update Toolbar and Window
          */
         if (toolbar != null) {
-            toolbar.setTitle(intent.getStringExtra(Constants.INTENT_TITLE));
+            toolbar.setTitle(mIntent.getStringExtra(Constants.INTENT_TITLE));
         } else {
-            tvMovieTitle.setText(intent.getStringExtra(Constants.INTENT_TITLE));
+            tvMovieTitle.setText(mIntent.getStringExtra(Constants.INTENT_TITLE));
         }
 
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDarker));
+
+        isFavourited = false;
     }
 
     private void closeOnNullIntent() {
@@ -132,19 +139,19 @@ public class MovieDetailActivity extends AppCompatActivity
         Toast.makeText(this, R.string.detail_intent_error, Toast.LENGTH_SHORT).show();
     }
 
-    private void populateViews(Intent intent) {
+    private void populateViews() {
         // Get Info for Movie Details
         String userRating = String.valueOf(
-                intent != null ? intent.getDoubleExtra(Constants.INTENT_USER_RATING, 0.0) : 0) + " / 10";
+                mIntent != null ? mIntent.getDoubleExtra(Constants.INTENT_USER_RATING, 0.0) : 0) + " / 10";
         Uri backdropImageUri =
-                NetworkUtils.buildMovieBackdropUri(intent.getStringExtra(Constants.INTENT_BACKDROP_URL));
+                NetworkUtils.buildMovieBackdropUri(mIntent.getStringExtra(Constants.INTENT_BACKDROP_URL));
         Uri moviePosterUri =
-                NetworkUtils.buildImageURL(intent.getStringExtra(Constants.INTENT_IMAGE_URL));
+                NetworkUtils.buildImageURL(mIntent.getStringExtra(Constants.INTENT_IMAGE_URL));
 
         // Populate Views with Data
         userRatingTv.setText(userRating);
-        releaseDateTv.setText(intent.getStringExtra(Constants.INTENT_RELEASE_DATE));
-        plotTv.setText(intent.getStringExtra(Constants.INTENT_PLOT));
+        releaseDateTv.setText(mIntent.getStringExtra(Constants.INTENT_RELEASE_DATE));
+        plotTv.setText(mIntent.getStringExtra(Constants.INTENT_PLOT));
 
         /**
          * Load Images
@@ -226,5 +233,54 @@ public class MovieDetailActivity extends AppCompatActivity
             }
         });
         animator.start();
+    }
+
+
+    public void favouritesClicked(View view) {
+        if (isFavourited) {
+            ivFavourites.setColorFilter(getColor(R.color.colorMinorDetailsText));
+            isFavourited = false;
+
+            deleteMovie();
+        } else {
+            ivFavourites.setColorFilter(getColor(R.color.colorPrimary));
+            isFavourited = true;
+
+            insertMovie();
+        }
+    }
+
+    private void insertMovie() {
+
+        Bitmap poster = ((BitmapDrawable)movieImage.getDrawable()).getBitmap();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        poster.compress(Bitmap.CompressFormat.PNG, 100, bos);
+        byte[] img = bos.toByteArray();
+
+        ContentValues cv = new ContentValues();
+
+        cv.put(MovieEntry.COLUMN_TITLE, mIntent.getStringExtra(Constants.INTENT_TITLE));
+        cv.put(MovieEntry.COLUMN_PLOT, mIntent.getStringExtra(Constants.INTENT_PLOT));
+        cv.put(MovieEntry.COLUMN_USER_RATING,
+                mIntent != null ? mIntent.getDoubleExtra(Constants.INTENT_USER_RATING, 0.0) : 0);
+        cv.put(MovieEntry.COLUMN_RELEASE_DATE, mIntent.getStringExtra(Constants.INTENT_RELEASE_DATE));
+        cv.put(MovieEntry.COLUMN_MOVIE_ID, mIntent.getIntExtra(Constants.INTENT_MOVIE_ID, 0));
+        cv.put(MovieEntry.COLUMN_POSTER_IMAGE, img);
+
+
+        Uri uri = getContentResolver().insert(MovieEntry.CONTENT_URI, cv);
+
+        if(uri != null) {
+            Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void deleteMovie() {
+        String movieId = String.valueOf(mIntent.getIntExtra(Constants.INTENT_MOVIE_ID, 0));
+        System.out.println("Moive ID Delete: " + movieId);
+
+        Uri uri = MovieEntry.CONTENT_URI.buildUpon().appendPath(movieId).build();
+
+        getContentResolver().delete(uri, null, null);
     }
 }

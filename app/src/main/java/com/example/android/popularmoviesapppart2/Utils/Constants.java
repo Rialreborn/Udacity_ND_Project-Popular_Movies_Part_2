@@ -12,6 +12,7 @@ public class Constants {
     public static final String MOVIE_SORT_ORDER_KEY = "movie_sort_order";
     public static final String MOVIE_SORT_ORDER_POPULAR = "popular";
     public static final String MOVIE_SORT_ORDER_RATING = "top_rated";
+    public static final String MOVIE_SORT_ORDER_FAVOURITES = "favourites";
 
     // JSON
     public static final String TITLE = "original_title";

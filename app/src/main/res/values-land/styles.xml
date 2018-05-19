@@ -21,8 +21,6 @@
         <item name="itemIconTint">@drawable/menu_selector</item>
     </style>
 
-
-    <!-- Movie Detail Text Styles -->
     <!-- Movie Title -->
     <style name="movieDetailMovieTitle">
         <item name="android:textColor">@android:color/white</item>
@@ -32,7 +30,17 @@
         <item name="android:layout_marginLeft">8dp</item>
     </style>
 
-    <!-- Movie Details (Rating details, Release details etc) -->
+    <!-- Movie Detail Titles (Trailers, Reviews) -->
+    <style name="movieDetailSubHeaderText" >
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginBottom">2dp</item>
+    </style>
+
+    <!-- Movie Details (Rating, Release date) -->
     <style name="movieMinorDetailTextStyle">
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/colorMinorDetailsText</item>
@@ -54,15 +62,7 @@
         <item name="android:layout_marginEnd">8dp</item>
     </style>
 
-    <!-- Movie Detail Titles (Trailer Header, Review Header) -->
-    <style name="movieDetailSubHeaderText" >
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:textSize">20sp</item>
-        <item name="android:layout_marginStart">8dp</item>
-        <item name="android:layout_marginLeft">8dp</item>
-        <item name="android:layout_marginTop">4dp</item>
-        <item name="android:layout_marginBottom">2dp</item>
-    </style>
+
 
     <!-- Movie Details (Trailer Name Detail) -->
     <style name="trailerNameTextStyle">

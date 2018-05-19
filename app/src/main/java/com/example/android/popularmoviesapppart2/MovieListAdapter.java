@@ -1,5 +1,6 @@
 package com.example.android.popularmoviesapppart2;
 
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -60,9 +61,12 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
 
         void bind(int position) {
             String imageUrl = mMovieArray.get(position).getImageUrl();
-            Uri image = NetworkUtils.buildImageURL(imageUrl);
-
-            Picasso.with(mView.getContext()).load(image).into(mMoviePosterImage);
+            if (imageUrl == null || imageUrl.isEmpty()) {
+                mMoviePosterImage.setImageBitmap(mMovieArray.get(position).getMoviePoster());
+            } else {
+                Uri image = NetworkUtils.buildImageURL(imageUrl);
+                Picasso.with(mView.getContext()).load(image).into(mMoviePosterImage);
+            }
         }
 
         @Override

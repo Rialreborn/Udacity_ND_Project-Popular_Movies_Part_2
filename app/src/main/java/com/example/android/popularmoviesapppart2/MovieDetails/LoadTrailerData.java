@@ -1,8 +1,10 @@
-package com.example.android.popularmoviesapppart2.Utils;
+package com.example.android.popularmoviesapppart2.MovieDetails;
 
 import android.os.AsyncTask;
 
 import com.example.android.popularmoviesapppart2.Model.Trailers;
+import com.example.android.popularmoviesapppart2.Utils.JsonUtils;
+import com.example.android.popularmoviesapppart2.Utils.NetworkUtils;
 
 import org.json.JSONException;
 

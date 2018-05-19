@@ -12,7 +12,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Switch;
 
+import com.example.android.popularmoviesapppart2.Database.MovieContract;
 import com.example.android.popularmoviesapppart2.MovieListFragment;
 import com.example.android.popularmoviesapppart2.R;
 import com.example.android.popularmoviesapppart2.Utils.Constants;
@@ -35,15 +37,28 @@ public class BottomNavigationMenu extends Fragment {
         // Set up Pref
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String currentSortOrder = sharedPreferences.getString(Constants.MOVIE_SORT_ORDER_KEY, Constants.MOVIE_SORT_ORDER_POPULAR);
-        if (currentSortOrder.equals(Constants.MOVIE_SORT_ORDER_RATING)) {
-            menuItem = menu.getItem(1);
-            int id = menuItem.getItemId();
-            bottomNavigationView.setSelectedItemId(id);
+
+        int id;
+        switch (currentSortOrder) {
+            case Constants.MOVIE_SORT_ORDER_POPULAR:
+                menuItem = menu.getItem(0);
+                id = menuItem.getItemId();
+                break;
+
+            case Constants.MOVIE_SORT_ORDER_RATING:
+                menuItem = menu.getItem(1);
+                id = menuItem.getItemId();
+                break;
+
+            default:
+                menuItem = menu.getItem(2);
+                id = menuItem.getItemId();
+                break;
         }
+        bottomNavigationView.setSelectedItemId(id);
 
         // Create Pref Editor
         final SharedPreferences.Editor editor = sharedPreferences.edit();
-
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -53,19 +68,33 @@ public class BottomNavigationMenu extends Fragment {
                         menuItem = menu.getItem(0);
                         editor.putString(Constants.MOVIE_SORT_ORDER_KEY, Constants.MOVIE_SORT_ORDER_POPULAR).apply();
                         replaceFragment(fragmentManager);
+                        menuItem.setChecked(true);
                         break;
 
                     case R.id.highest_rated_movies_menu_item:
                         menuItem = menu.getItem(1);
                         editor.putString(Constants.MOVIE_SORT_ORDER_KEY, Constants.MOVIE_SORT_ORDER_RATING).apply();
                         replaceFragment(fragmentManager);
+                        menuItem.setChecked(true);
                         break;
+
+                    case R.id.favourite_movies_menu_item:
+                        menuItem = menu.getItem(2);
+                        editor.putString(Constants.MOVIE_SORT_ORDER_KEY, Constants.MOVIE_SORT_ORDER_FAVOURITES).apply();
+                        replaceFragment(fragmentManager);
+                        menuItem.setChecked(true);
+                        break;
+
+                    case R.id.wipe_favourites_menu_item:
+                        getContext().getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI, null, null);
+                        break;
+
                 }
-                menuItem.setChecked(true);
+
 
                 return false;
-                }
-            });
+            }
+        });
 
         return rootView;
     }
@@ -76,9 +105,5 @@ public class BottomNavigationMenu extends Fragment {
                     .replace(R.id.movie_frame_layout, new MovieListFragment())
                     .commit();
         }
-    }
-
-    private void setColors(MenuItem menuItem) {
-
     }
 }

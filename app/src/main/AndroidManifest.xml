@@ -25,9 +25,12 @@
         <activity android:name="com.example.android.popularmoviesapppart2.MovieDetails.MovieDetailActivity"
             android:parentActivityName="com.example.android.popularmoviesapppart2.MainActivity"
             android:theme="@style/Theme.Design.NoActionBar">
-
-
         </activity>
+        
+        <provider
+            android:name="com.example.android.popularmoviesapppart2.Database.MovieProvider"
+            android:exported="false"
+            android:authorities="com.example.android.popularmoviesapppart2"/>
 
     </application>
 

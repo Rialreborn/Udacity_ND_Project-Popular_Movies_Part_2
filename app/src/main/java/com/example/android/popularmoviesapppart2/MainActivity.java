@@ -1,7 +1,9 @@
 package com.example.android.popularmoviesapppart2;
 
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +31,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(com.example.android.popularmoviesapppart2.R.layout.activity_main);
 
         ButterKnife.bind(this);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(Constants.MOVIE_SORT_ORDER_KEY, Constants.MOVIE_SORT_ORDER_POPULAR).apply();
 
         //noinspection ConstantConditions
         if (Constants.API_KEY == null || Constants.API_KEY.isEmpty()) {
