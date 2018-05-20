@@ -4,9 +4,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.internal.BottomNavigationItemView;
+import android.support.design.internal.BottomNavigationMenuView;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +21,8 @@ import com.example.android.popularmoviesapppart2.Database.MovieContract;
 import com.example.android.popularmoviesapppart2.MovieListFragment;
 import com.example.android.popularmoviesapppart2.R;
 import com.example.android.popularmoviesapppart2.Utils.Constants;
+
+import java.lang.reflect.Field;
 
 public class BottomNavigationMenu extends Fragment {
 
@@ -32,6 +37,8 @@ public class BottomNavigationMenu extends Fragment {
         View rootView = inflater.inflate(R.layout.bottom_menu_layout, container, false);
 
         BottomNavigationView bottomNavigationView = rootView.findViewById(R.id.bottom_navigation_menu);
+        BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
+
         final Menu menu = bottomNavigationView.getMenu();
 
         // Set up Pref
@@ -87,6 +94,7 @@ public class BottomNavigationMenu extends Fragment {
 
                     case R.id.wipe_favourites_menu_item:
                         getContext().getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI, null, null);
+                        replaceFragment(fragmentManager);
                         break;
 
                 }
@@ -106,4 +114,6 @@ public class BottomNavigationMenu extends Fragment {
                     .commit();
         }
     }
+
+
 }
