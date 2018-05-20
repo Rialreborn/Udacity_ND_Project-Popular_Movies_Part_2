@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -24,8 +25,9 @@ import android.widget.Toast;
 
 import android.support.v7.widget.Toolbar;
 
-import com.example.android.popularmoviesapppart2.Database.MovieContract;
+import com.example.android.popularmoviesapppart2.Database.DbHelper;
 import com.example.android.popularmoviesapppart2.Database.MovieContract.MovieEntry;
+import com.example.android.popularmoviesapppart2.Model.Movie;
 import com.example.android.popularmoviesapppart2.Model.Reviews;
 import com.example.android.popularmoviesapppart2.Model.Trailers;
 import com.example.android.popularmoviesapppart2.R;
@@ -47,7 +49,8 @@ public class MovieDetailActivity extends AppCompatActivity
         implements OnTrailerLoadFinished,
         OnReviewsLoadFinished {
 
-    @Nullable @BindView(R.id.movie_backdrop)
+    @Nullable
+    @BindView(R.id.movie_backdrop)
     ImageView backdropImage;
     @BindView(R.id.movie_image)
     ImageView movieImage;
@@ -57,7 +60,8 @@ public class MovieDetailActivity extends AppCompatActivity
     TextView releaseDateTv;
     @BindView(R.id.plot_tv)
     TextView plotTv;
-    @Nullable @BindView(R.id.toolbar)
+    @Nullable
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.rv_trailerList)
     RecyclerView rvTrailerList;
@@ -65,10 +69,11 @@ public class MovieDetailActivity extends AppCompatActivity
     RecyclerView rvReviews;
     @BindView(R.id.no_reviews_found)
     TextView tvNoReviews;
-    @Nullable @BindView(R.id.title)
-            TextView tvMovieTitle;
+    @Nullable
+    @BindView(R.id.title)
+    TextView tvMovieTitle;
     @BindView(R.id.add_to_favourites)
-            ImageView ivFavourites;
+    ImageView ivFavourites;
 
     int movieID;
     Intent mIntent;
@@ -87,9 +92,6 @@ public class MovieDetailActivity extends AppCompatActivity
             closeOnNullIntent();
         }
 
-        /*
-         * Init. Movie ID
-         */
         movieID = mIntent.getIntExtra(Constants.INTENT_MOVIE_ID, 0);
 
         /*
@@ -120,18 +122,39 @@ public class MovieDetailActivity extends AppCompatActivity
         /*
          * Update Toolbar and Window
          */
-        if (toolbar != null) {
-            toolbar.setTitle(mIntent.getStringExtra(Constants.INTENT_TITLE));
-        } else {
-            tvMovieTitle.setText(mIntent.getStringExtra(Constants.INTENT_TITLE));
-        }
+        tvMovieTitle.setText(mIntent.getStringExtra(Constants.INTENT_TITLE));
 
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDarker));
 
-        isFavourited = false;
+        /*
+        Set up Favourite Button
+         */
+        checkIfFavourite();
+    }
+
+    private void checkIfFavourite() {
+        String[] projection = {MovieEntry.COLUMN_MOVIE_ID};
+        String id = String.valueOf(mIntent.getIntExtra(Constants.INTENT_MOVIE_ID, 0));
+        String[] selectionArgs = {id};
+
+        Cursor cursor = getContentResolver().query(
+                MovieEntry.CONTENT_URI.buildUpon().appendPath(String.valueOf(mIntent.getIntExtra(Constants.INTENT_MOVIE_ID, 0))).build(),
+                projection,
+                null,
+                selectionArgs,
+                null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            System.out.println("Movie is Favourite");
+            isFavourited = true;
+        } else {
+            System.out.println("Movie is NOT Favourite");
+            isFavourited = false;
+        }
+        setFavouritesColor();
     }
 
     private void closeOnNullIntent() {
@@ -140,30 +163,49 @@ public class MovieDetailActivity extends AppCompatActivity
     }
 
     private void populateViews() {
-        // Get Info for Movie Details
+                /*
+        Populate Text Views with Data
+         */
         String userRating = String.valueOf(
                 mIntent != null ? mIntent.getDoubleExtra(Constants.INTENT_USER_RATING, 0.0) : 0) + " / 10";
-        Uri backdropImageUri =
-                NetworkUtils.buildMovieBackdropUri(mIntent.getStringExtra(Constants.INTENT_BACKDROP_URL));
-        Uri moviePosterUri =
-                NetworkUtils.buildImageURL(mIntent.getStringExtra(Constants.INTENT_IMAGE_URL));
-
-        // Populate Views with Data
         userRatingTv.setText(userRating);
         releaseDateTv.setText(mIntent.getStringExtra(Constants.INTENT_RELEASE_DATE));
         plotTv.setText(mIntent.getStringExtra(Constants.INTENT_PLOT));
 
-        /**
-         * Load Images
+        /*
+        Set Movie Poster
+        If Bytes exist in Favourites Table, load
+        Else load from web
          */
-        if (backdropImage != null) {
+        byte[] byteMovieImage = mIntent.getByteArrayExtra(Constants.INTENT_POSTER_BYTE);
+        if (byteMovieImage != null) {
+            movieImage.setImageBitmap(Movie.convertBytesToBitmap(byteMovieImage));
+        } else {
+            Uri moviePosterUri =
+                    NetworkUtils.buildImageURL(mIntent.getStringExtra(Constants.INTENT_IMAGE_URL));
+            Picasso.with(this)
+                    .load(moviePosterUri)
+                    .into(movieImage);
+        }
+
+        /*
+        Set Movie Backdrop
+        If Bytes exist in Favourites Table, load
+        Else load from web
+         */
+        byte[] byteMovieBackdrop = mIntent.getByteArrayExtra(Constants.INTENT_BACKDROP_BYTE);
+        if (backdropImage == null) {return;}
+        if (byteMovieBackdrop != null) {
+            backdropImage.setImageBitmap(Movie.convertBytesToBitmap(byteMovieBackdrop));
+        } else {
+            Uri backdropImageUri =
+                    NetworkUtils.buildMovieBackdropUri(mIntent.getStringExtra(Constants.INTENT_BACKDROP_URL));
             Picasso.with(this)
                     .load(backdropImageUri)
                     .into(backdropImage);
         }
-        Picasso.with(this)
-                .load(moviePosterUri)
-                .into(movieImage);
+
+
     }
 
     @Override
@@ -237,22 +279,29 @@ public class MovieDetailActivity extends AppCompatActivity
 
 
     public void favouritesClicked(View view) {
-        if (isFavourited) {
-            ivFavourites.setColorFilter(getColor(R.color.colorMinorDetailsText));
-            isFavourited = false;
 
+        if (isFavourited) {
+            isFavourited = false;
             deleteMovie();
         } else {
-            ivFavourites.setColorFilter(getColor(R.color.colorPrimary));
             isFavourited = true;
-
             insertMovie();
+        }
+
+        setFavouritesColor();
+    }
+
+    private void setFavouritesColor() {
+        if (isFavourited) {
+            ivFavourites.setColorFilter(getColor(R.color.colorPrimary));
+        } else {
+            ivFavourites.setColorFilter(getColor(R.color.colorMinorDetailsText));
         }
     }
 
     private void insertMovie() {
 
-        Bitmap poster = ((BitmapDrawable)movieImage.getDrawable()).getBitmap();
+        Bitmap poster = ((BitmapDrawable) movieImage.getDrawable()).getBitmap();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         poster.compress(Bitmap.CompressFormat.PNG, 100, bos);
         byte[] img = bos.toByteArray();
@@ -270,7 +319,7 @@ public class MovieDetailActivity extends AppCompatActivity
 
         Uri uri = getContentResolver().insert(MovieEntry.CONTENT_URI, cv);
 
-        if(uri != null) {
+        if (uri != null) {
             Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
         }
     }

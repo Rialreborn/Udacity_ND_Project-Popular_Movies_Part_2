@@ -23,7 +23,10 @@
             app:contentScrim="@color/colorPrimaryDark"
             app:expandedTitleMarginEnd="64dp"
             app:expandedTitleMarginStart="48dp"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+
+            app:titleEnabled="false">
+
 
             <ImageView
                 android:id="@+id/movie_backdrop"
@@ -40,6 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin" />
+
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
@@ -63,8 +67,8 @@
                     android:id="@+id/movie_image"
                     android:layout_width="wrap_content"
                     android:layout_height="220dp"
-                    android:layout_marginTop="8dp"
                     android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/movie_details_poster_content_description"
                     android:scaleType="centerCrop" />
@@ -73,6 +77,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/title"
+                        style="@style/movieDetailMovieTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
 
                     <TextView
                         style="@style/movieDetailSubHeaderText"
@@ -93,29 +103,42 @@
                         android:layout_marginStart="8dp"
                         android:background="@color/colorPrimaryDark" />
 
-                    <TextView
-                        style="@style/movieDetailSubHeaderText"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/movie_details_release_date" />
+                        android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/release_date_tv"
-                        style="@style/movieMinorDetailTextStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_weight="1">
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_margin="10dp"
-                        android:src="@drawable/favourites"
-                        android:tint="@color/colorMinorDetailsText"
-                        android:layout_gravity="end"
-                        android:scaleType="centerCrop"
-                        android:onClick="favouritesClicked"
-                        android:id="@+id/add_to_favourites"
-                        android:layout_height="wrap_content" />
+                            <TextView
+                                style="@style/movieDetailSubHeaderText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/movie_details_release_date" />
 
+                            <TextView
+                                android:id="@+id/release_date_tv"
+                                style="@style/movieMinorDetailTextStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/add_to_favourites"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_margin="10dp"
+                            android:onClick="favouritesClicked"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/favourites"
+                            android:tint="@color/colorMinorDetailsText" />
+
+                    </LinearLayout>
 
 
                 </LinearLayout>
@@ -123,22 +146,22 @@
             </LinearLayout>
 
             <TextView
+                style="@style/movieDetailSubHeaderText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/movieDetailSubHeaderText"
                 android:text="@string/plot" />
 
             <TextView
                 android:id="@+id/plot_tv"
                 style="@style/plotTextStyle"
-                android:background="@drawable/rounded_corner"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:background="@drawable/rounded_corner" />
 
             <TextView
+                style="@style/movieDetailSubHeaderText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/movieDetailSubHeaderText"
                 android:text="@string/trailers" />
 
 
@@ -150,9 +173,9 @@
                 android:scrollbars="vertical" />
 
             <TextView
+                style="@style/movieDetailSubHeaderText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/movieDetailSubHeaderText"
                 android:text="@string/reviews" />
 
             <android.support.v7.widget.RecyclerView
@@ -162,12 +185,12 @@
                 android:layout_marginTop="2dp" />
 
             <TextView
+                android:id="@+id/no_reviews_found"
+                style="@style/movieMinorDetailTextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/no_reviews_found"
                 android:text="@string/no_reviews_found"
-                android:visibility="invisible"
-                style="@style/movieMinorDetailTextStyle"/>
+                android:visibility="invisible" />
 
 
         </LinearLayout>

@@ -35,6 +35,8 @@ public class Constants {
     public static final String INTENT_PLOT = "plot";
     public static final String INTENT_BACKDROP_URL = "backdrop_url";
     public static final String INTENT_MOVIE_ID = "intent_movie_id";
+    public static final String INTENT_POSTER_BYTE = "poster_bytes";
+    public static final String INTENT_BACKDROP_BYTE = "backdrop_bytes";
 
     // Trailer
     public static final String TRAILER_TRAILER = "Trailer";

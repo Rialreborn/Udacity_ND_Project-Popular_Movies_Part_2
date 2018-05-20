@@ -52,6 +52,19 @@ public class MovieProvider extends ContentProvider {
                         sortOrder);
                 break;
 
+            case MOVIE_WITH_ID:
+
+                System.out.println("Last path Segment: " + uri.getLastPathSegment());
+                cursor = db.query(
+                        MovieEntry.TABLE_NAME,
+                        projection,
+                        MovieEntry.COLUMN_MOVIE_ID + " = ? ",
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+
                 default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }

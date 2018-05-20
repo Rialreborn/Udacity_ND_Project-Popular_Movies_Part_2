@@ -21,6 +21,15 @@
         <item name="itemIconTint">@drawable/menu_selector</item>
     </style>
 
+    <!-- Movie Title -->
+    <style name="movieDetailMovieTitle">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">26sp</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginLeft">8dp</item>
+    </style>
+
     <!-- Movie Titles (Rating, Release date, Plot, Trailers, Reviews) -->
     <style name="movieDetailSubHeaderText">
         <item name="android:textSize">20sp</item>

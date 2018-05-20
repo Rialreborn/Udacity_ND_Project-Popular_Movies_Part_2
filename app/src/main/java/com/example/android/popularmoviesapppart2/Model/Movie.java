@@ -13,7 +13,8 @@ public class Movie {
     private final String mReleaseDate;
     private final String mMovieBackdrop;
     private final int mMovieId;
-    private final byte[] mPoster;
+    private final byte[] mPosterBytes;
+    private final byte[] mBackdropBytes;
 
     public Movie(String title, String imageUrl, String plot, double userRating, String releaseDate, String movieBackdrop,
                  int movieId) {
@@ -24,19 +25,21 @@ public class Movie {
         this.mReleaseDate = releaseDate;
         this.mMovieBackdrop = movieBackdrop;
         this.mMovieId = movieId;
-        this.mPoster = null;
+        this.mPosterBytes = null;
+        this.mBackdropBytes = null;
     }
 
     public Movie(String title, String plot, double userRating, String releaseDate,
-                 int movieId, byte[] poster) {
+                 int movieId, byte[] poster, byte[] backdrop) {
         this.mTitle = title;
         this.mPlot = plot;
         this.mUserRating = userRating;
         this.mReleaseDate = releaseDate;
         this.mMovieBackdrop = null;
         this.mMovieId = movieId;
-        this.mPoster = poster;
+        this.mPosterBytes = poster;
         this.mImageUrl = null;
+        this.mBackdropBytes = backdrop;
     }
 
     public String getTitle() {
@@ -59,11 +62,19 @@ public class Movie {
         return mReleaseDate;
     }
 
-    public String getMovieBackdrop() {return  mMovieBackdrop; }
+    public String getMovieBackdropUrl() {return  mMovieBackdrop; }
 
     public Bitmap getMoviePoster() {
-        return BitmapFactory.decodeByteArray(mPoster, 0, mPoster.length);
+        return convertBytesToBitmap(mPosterBytes);
     }
 
+    public byte[] getMoviePosterByte() {return mPosterBytes;}
+
+    public byte[] getMovieBackdropByte() {return mBackdropBytes;}
+
     public int getMovieId() {return mMovieId;}
+
+    public static Bitmap convertBytesToBitmap(byte[] bytes) {
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+    }
 }

@@ -11,20 +11,15 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.android.popularmoviesapppart2.Database.MovieContract;
 import com.example.android.popularmoviesapppart2.Database.MovieContract.MovieEntry;
 import com.example.android.popularmoviesapppart2.Model.Movie;
 import com.example.android.popularmoviesapppart2.MovieDetails.MovieDetailActivity;
@@ -102,7 +97,8 @@ public class MovieListFragment extends Fragment
                         cursor.getDouble(cursor.getColumnIndex(MovieEntry.COLUMN_USER_RATING)),
                         cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_RELEASE_DATE)),
                         cursor.getInt(cursor.getColumnIndex(MovieEntry.COLUMN_MOVIE_ID)),
-                        cursor.getBlob(cursor.getColumnIndex(MovieEntry.COLUMN_POSTER_IMAGE))));
+                        cursor.getBlob(cursor.getColumnIndex(MovieEntry.COLUMN_POSTER_IMAGE)),
+                        cursor.getBlob(cursor.getColumnIndex(MovieEntry.COLUMN_BACKDROP_IMAGE))));
             } while (cursor.moveToNext());
         }
 
@@ -184,8 +180,10 @@ public class MovieListFragment extends Fragment
                         .putExtra(Constants.INTENT_USER_RATING, movie.getUserRating())
                         .putExtra(Constants.INTENT_RELEASE_DATE, movie.getReleaseDate())
                         .putExtra(Constants.INTENT_PLOT, movie.getPlot())
-                        .putExtra(Constants.INTENT_BACKDROP_URL, movie.getMovieBackdrop())
+                        .putExtra(Constants.INTENT_BACKDROP_URL, movie.getMovieBackdropUrl())
                         .putExtra(Constants.INTENT_MOVIE_ID, movie.getMovieId())
+                        .putExtra(Constants.INTENT_POSTER_BYTE, movie.getMoviePosterByte())
+                        .putExtra(Constants.INTENT_BACKDROP_BYTE, movie.getMoviePosterByte())
                 ;
                 startActivity(intent);
             }
