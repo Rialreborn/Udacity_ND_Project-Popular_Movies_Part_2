@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.popularmoviesapppart2.Database.MovieContract.MovieEntry;
@@ -33,6 +34,8 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.content.Context.CONNECTIVITY_SERVICE;
+
 
 public class MovieListFragment extends Fragment
         implements
@@ -43,10 +46,12 @@ public class MovieListFragment extends Fragment
 
 
 
-    @BindView(com.example.android.popularmoviesapppart2.R.id.recycler_view)
+    @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
-    @BindView(com.example.android.popularmoviesapppart2.R.id.progress_bar)
+    @BindView(R.id.progress_bar)
     ProgressBar progressBar;
+    @BindView(R.id.error_message_tv)
+    TextView tvErrorMessage;
 
     private String mMovieOrder;
 
@@ -59,18 +64,24 @@ public class MovieListFragment extends Fragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        final View rootView = inflater.inflate(R.layout.movie_list_fragment, container, false);
+        ButterKnife.bind(MovieListFragment.this, rootView);
+
+
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mMovieOrder = sharedPreferences.getString(Constants.MOVIE_SORT_ORDER_KEY, Constants.MOVIE_SORT_ORDER_POPULAR);
-
-        final View rootView = inflater.inflate(com.example.android.popularmoviesapppart2.R.layout.movie_list_fragment, container, false);
-
-        ButterKnife.bind(MovieListFragment.this, rootView);
 
         GridLayoutManager layoutManager = setLayoutManager(container);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 
         if (!mMovieOrder.equals(Constants.MOVIE_SORT_ORDER_FAVOURITES)) {
+            if (Constants.API_KEY == null || Constants.API_KEY.isEmpty()) {
+                noApiKeyFound();
+            } else if (!networkConnection()) {
+                noNetworkFound();
+            }
             loadMovieData();
         } else {
             loadFavourites();
@@ -102,12 +113,17 @@ public class MovieListFragment extends Fragment
             } while (cursor.moveToNext());
         }
 
+        if (moviesArrayList.size() < 1) {
+            recyclerView.setVisibility(View.GONE);
+            tvErrorMessage.setText(getString(R.string.no_favourites));
+        }
+
         setAdapter(moviesArrayList);
     }
 
 
     private void loadMovieData() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(CONNECTIVITY_SERVICE);
 
         NetworkInfo info = null;
         if (connectivityManager != null) {
@@ -117,8 +133,6 @@ public class MovieListFragment extends Fragment
         if (info != null && info.isConnectedOrConnecting()) {
                 URL url = NetworkUtils.buildMoviesUrl(mMovieOrder);
                 new LoadMovieData(this, this).execute(url);
-        } else {
-            Toast.makeText(getActivity(), getString(R.string.no_network), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -190,6 +204,29 @@ public class MovieListFragment extends Fragment
         });
 
         recyclerView.setAdapter(movieListAdapter);
+    }
+
+    private void noNetworkFound() {
+        recyclerView.setVisibility(View.GONE);
+        tvErrorMessage.setVisibility(View.VISIBLE);
+        tvErrorMessage.setText(getString(R.string.no_network));
+    }
+
+    private void noApiKeyFound() {
+        recyclerView.setVisibility(View.GONE);
+        tvErrorMessage.setVisibility(View.VISIBLE);
+        tvErrorMessage.setText(getString(R.string.api_key_needed));
+    }
+
+    private boolean networkConnection() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getContext().getSystemService(CONNECTIVITY_SERVICE);
+
+        NetworkInfo info = null;
+        if (connectivityManager != null) {
+            info = connectivityManager.getActiveNetworkInfo();
+        }
+
+        return info != null && info.isConnectedOrConnecting();
     }
 }
 

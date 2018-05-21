@@ -31,11 +31,6 @@
         Will update shared prefs
         -->
 
-        <!--<View-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="2dp"-->
-            <!--android:background="@color/colorPrimaryDark" />-->
-
         <FrameLayout
             android:id="@+id/menu_frame_layout"
             android:layout_width="match_parent"
@@ -43,15 +38,5 @@
             android:background="@color/menuBackground" />
 
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/error_message_tv"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:background="@color/colorAccent"
-        android:gravity="center"
-        style="@style/movieDetailSubHeaderText"
-        android:visibility="gone" />
 
 </LinearLayout>

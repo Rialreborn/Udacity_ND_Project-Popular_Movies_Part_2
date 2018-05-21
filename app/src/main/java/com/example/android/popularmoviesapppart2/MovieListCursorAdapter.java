@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,11 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.android.popularmoviesapppart2.Database.MovieContract;
-import com.example.android.popularmoviesapppart2.Model.Movie;
-import com.example.android.popularmoviesapppart2.Utils.NetworkUtils;
-import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
 
 /**
  * Created by Zane on 19/05/2018.
@@ -37,7 +31,7 @@ public class MovieListCursorAdapter extends RecyclerView.Adapter<MovieListCursor
     @Override
     public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.movie_poster_rv_list_item, parent, false);
+                .inflate(R.layout.movie_poster_rv_item, parent, false);
         return new MovieViewHolder(view);
     }
 

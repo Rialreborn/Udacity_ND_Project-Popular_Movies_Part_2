@@ -7,10 +7,6 @@ import android.util.Log;
 
 import java.lang.reflect.Field;
 
-/**
- * Created by Zane on 20/05/2018.
- */
-
 public class BottomNavigationViewHelper {
 
     public static void disableShiftMode(BottomNavigationView view) {

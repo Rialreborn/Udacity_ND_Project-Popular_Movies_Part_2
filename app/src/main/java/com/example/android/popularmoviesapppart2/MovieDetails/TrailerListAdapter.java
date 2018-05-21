@@ -1,7 +1,9 @@
 package com.example.android.popularmoviesapppart2.MovieDetails;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,10 +22,12 @@ public class TrailerListAdapter extends RecyclerView.Adapter<TrailerListAdapter.
 
     public final ArrayList<Trailers> mTrailersArrayList;
     public final OnTrailerClickListener mTrailerClicked;
+    public final OnShareTrailerClickListener mShareTrailer;
 
-    public TrailerListAdapter(ArrayList<Trailers> trailersArrayList, OnTrailerClickListener trailerClicked) {
+    public TrailerListAdapter(ArrayList<Trailers> trailersArrayList, OnTrailerClickListener trailerClicked, OnShareTrailerClickListener shareTrailer) {
         this.mTrailersArrayList = trailersArrayList;
         this.mTrailerClicked = trailerClicked;
+        this.mShareTrailer = shareTrailer;
     }
 
     @NonNull
@@ -51,29 +55,45 @@ public class TrailerListAdapter extends RecyclerView.Adapter<TrailerListAdapter.
         View mView;
         TextView mTrailerName;
         ImageView mThumbNail;
+        ImageView mShare;
 
         public TrailerViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
             mTrailerName = itemView.findViewById(R.id.tv_trailer_name);
             mThumbNail = itemView.findViewById(R.id.iv_trailer_image);
-            mView.setOnClickListener(this);
+            mShare = itemView.findViewById(R.id.iv_share_trailer);
+
+            mThumbNail.setOnClickListener(this);
+            mShare.setOnClickListener(this);
         }
 
-        void bind(int position) {
+        void bind(final int position) {
             mTrailerName.setText(mTrailersArrayList.get(position).getTrailerName());
-
             Uri youtubeImage = NetworkUtils.buildYoutubeThumbnailUri(mTrailersArrayList.get(position).getKey());
             Picasso.with(mView.getContext()).load(youtubeImage).into(mThumbNail);
         }
 
         @Override
         public void onClick(View v) {
-            mTrailerClicked.onTrailerClick(getAdapterPosition());
+            switch (v.getId()) {
+                case R.id.iv_trailer_image:
+                    mTrailerClicked.onTrailerClick(getAdapterPosition());
+                    break;
+
+                case R.id.iv_share_trailer:
+                    mShareTrailer.onShareTrailerClick(getAdapterPosition());
+                    break;
+            }
+
         }
     }
 
     public interface OnTrailerClickListener {
         void onTrailerClick(int position);
+    }
+
+    public interface OnShareTrailerClickListener {
+        void onShareTrailerClick(int position);
     }
 }

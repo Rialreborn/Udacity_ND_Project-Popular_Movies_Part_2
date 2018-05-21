@@ -16,7 +16,7 @@
 
     <item
         android:id="@+id/wipe_favourites_menu_item"
-        android:title="WIPE"
-        android:icon="@drawable/star"/>
+        android:title="@string/menu_clear_favourites_tag"
+        android:icon="@drawable/clear_favourites"/>
 
 </menu>

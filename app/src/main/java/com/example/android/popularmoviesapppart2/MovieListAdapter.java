@@ -1,6 +1,5 @@
 package com.example.android.popularmoviesapppart2;
 
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -31,7 +30,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
     @Override
     public MovieHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.movie_poster_rv_list_item, parent, false);
+                .inflate(R.layout.movie_poster_rv_item, parent, false);
         return new MovieHolder(view);
     }
 

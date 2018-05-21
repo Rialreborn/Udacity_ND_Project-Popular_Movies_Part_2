@@ -8,5 +8,5 @@
 
     <item android:color="@color/colorMenuActiveText" android:state_checked="true" />
 
-    <item android:color="@color/colorMenuInactiveText" />
+    <item android:color="@color/colorMenuInactiveText"  />
 </selector>

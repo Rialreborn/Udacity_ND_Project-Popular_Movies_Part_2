@@ -32,6 +32,8 @@
             android:exported="false"
             android:authorities="com.example.android.popularmoviesapppart2"/>
 
+
+
     </application>
 
 </manifest>

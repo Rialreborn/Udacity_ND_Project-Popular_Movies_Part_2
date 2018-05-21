@@ -3,9 +3,7 @@
 
 
 
-    <string name="api_key_needed">API Key Needed! \n Please update Constants Class!</string>
-    <string name="no_network">Please check network status!</string>
-    <string name="detail_intent_error">Error loading movie details</string>
+
 
     <!-- Movie Details -->
     <string name="movie_details_user_rating">Rating</string>
@@ -18,11 +16,22 @@
 
     <!-- Menu -->
     <string name="menu_popular_tag">Popular</string>
-    <string name="menu_highest_rating_tag">Highest Rating</string>
+    <string name="menu_highest_rating_tag">Highly Rated</string>
     <string name="menu_favourites_tag">Favourites</string>
+    <string name="menu_clear_favourites_tag">Clear Favourites</string>
 
     <!-- Reviews List Item -->
     <string name="review_author">Author: </string>
     <string name="no_reviews_found">No Reviews Found</string>
+
+    <!-- Error Message Warnings -->
+    <string name="no_favourites">No Current Favourites!</string>
+    <string name="api_key_needed">API Key Needed! \n Please update Constants Class!</string>
+    <string name="no_network">Please check network status!</string>
+    <string name="detail_intent_error">Error loading movie details</string>
+
+    <!-- Favourites -->
+    <string name="added_to_favourites">Added to Favourites</string>
+    <string name="removed_from_favourites">Removed from Favourites</string>
 
 </resources>

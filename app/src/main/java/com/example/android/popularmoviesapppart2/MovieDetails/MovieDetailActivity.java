@@ -5,12 +5,12 @@ import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ShareCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
@@ -25,7 +25,6 @@ import android.widget.Toast;
 
 import android.support.v7.widget.Toolbar;
 
-import com.example.android.popularmoviesapppart2.Database.DbHelper;
 import com.example.android.popularmoviesapppart2.Database.MovieContract.MovieEntry;
 import com.example.android.popularmoviesapppart2.Model.Movie;
 import com.example.android.popularmoviesapppart2.Model.Reviews;
@@ -60,9 +59,6 @@ public class MovieDetailActivity extends AppCompatActivity
     TextView releaseDateTv;
     @BindView(R.id.plot_tv)
     TextView plotTv;
-    @Nullable
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
     @BindView(R.id.rv_trailerList)
     RecyclerView rvTrailerList;
     @BindView(R.id.rv_reviews)
@@ -77,7 +73,7 @@ public class MovieDetailActivity extends AppCompatActivity
 
     int movieID;
     Intent mIntent;
-    boolean isFavourited;
+    boolean isFavourite;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -148,11 +144,9 @@ public class MovieDetailActivity extends AppCompatActivity
                 null);
 
         if (cursor != null && cursor.moveToFirst()) {
-            System.out.println("Movie is Favourite");
-            isFavourited = true;
+            isFavourite = true;
         } else {
-            System.out.println("Movie is NOT Favourite");
-            isFavourited = false;
+            isFavourite = false;
         }
         setFavouritesColor();
     }
@@ -194,7 +188,9 @@ public class MovieDetailActivity extends AppCompatActivity
         Else load from web
          */
         byte[] byteMovieBackdrop = mIntent.getByteArrayExtra(Constants.INTENT_BACKDROP_BYTE);
-        if (backdropImage == null) {return;}
+        if (backdropImage == null) {
+            return;
+        }
         if (byteMovieBackdrop != null) {
             backdropImage.setImageBitmap(Movie.convertBytesToBitmap(byteMovieBackdrop));
         } else {
@@ -211,20 +207,35 @@ public class MovieDetailActivity extends AppCompatActivity
     @Override
     public void trailersFinished(final ArrayList<Trailers> trailersArrayList) {
 
-        TrailerListAdapter trailerListAdapter = new TrailerListAdapter(trailersArrayList, new TrailerListAdapter.OnTrailerClickListener() {
-            @Override
-            public void onTrailerClick(int position) {
-                String youtubeKey = trailersArrayList.get(position).getKey();
-                Intent appIntent = new Intent(Intent.ACTION_VIEW, NetworkUtils.buildYoutubeAppUri(youtubeKey));
-                Intent webIntent = new Intent(Intent.ACTION_VIEW, NetworkUtils.buildYoutubeUri(youtubeKey));
+        TrailerListAdapter trailerListAdapter = new TrailerListAdapter(
+                trailersArrayList,
+                new TrailerListAdapter.OnTrailerClickListener() {
+                    @Override
+                    public void onTrailerClick(int position) {
+                        String youtubeKey = trailersArrayList.get(position).getKey();
+                        Intent appIntent = new Intent(Intent.ACTION_VIEW, NetworkUtils.buildYoutubeAppUri(youtubeKey));
+                        Intent webIntent = new Intent(Intent.ACTION_VIEW, NetworkUtils.buildYoutubeUri(youtubeKey));
 
-                try {
-                    startActivity(appIntent);
-                } catch (ActivityNotFoundException e) {
-                    startActivity(webIntent);
-                }
-            }
-        });
+                        try {
+                            startActivity(appIntent);
+                        } catch (ActivityNotFoundException e) {
+                            startActivity(webIntent);
+                        }
+                    }
+                },
+                new TrailerListAdapter.OnShareTrailerClickListener() {
+                    @Override
+                    public void onShareTrailerClick(int position) {
+
+                        String youtubeKey = trailersArrayList.get(position).getKey();
+
+                        Intent intent = new Intent(Intent.ACTION_SEND);
+                        intent.setType("text/plain");
+                        intent.putExtra(Intent.EXTRA_TEXT, NetworkUtils.buildYoutubeUri(youtubeKey).toString());
+
+                        startActivity(Intent.createChooser(intent, "Share Trailer with: "));
+                    }
+                });
 
 
         rvTrailerList.setAdapter(trailerListAdapter);
@@ -280,19 +291,21 @@ public class MovieDetailActivity extends AppCompatActivity
 
     public void favouritesClicked(View view) {
 
-        if (isFavourited) {
-            isFavourited = false;
+        if (isFavourite) {
+            isFavourite = false;
             deleteMovie();
+            Toast.makeText(getApplicationContext(), getString(R.string.removed_from_favourites), Toast.LENGTH_SHORT).show();
         } else {
-            isFavourited = true;
+            isFavourite = true;
             insertMovie();
+            Toast.makeText(getApplicationContext(), getString(R.string.added_to_favourites), Toast.LENGTH_SHORT).show();
         }
 
         setFavouritesColor();
     }
 
     private void setFavouritesColor() {
-        if (isFavourited) {
+        if (isFavourite) {
             ivFavourites.setColorFilter(getColor(R.color.colorPrimary));
         } else {
             ivFavourites.setColorFilter(getColor(R.color.colorMinorDetailsText));
@@ -318,15 +331,10 @@ public class MovieDetailActivity extends AppCompatActivity
 
 
         Uri uri = getContentResolver().insert(MovieEntry.CONTENT_URI, cv);
-
-        if (uri != null) {
-            Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
-        }
     }
 
     private void deleteMovie() {
         String movieId = String.valueOf(mIntent.getIntExtra(Constants.INTENT_MOVIE_ID, 0));
-        System.out.println("Moive ID Delete: " + movieId);
 
         Uri uri = MovieEntry.CONTENT_URI.buildUpon().appendPath(movieId).build();
 

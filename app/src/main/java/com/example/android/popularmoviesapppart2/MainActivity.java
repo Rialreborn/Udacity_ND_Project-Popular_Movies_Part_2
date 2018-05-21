@@ -22,9 +22,6 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
-    @BindView(com.example.android.popularmoviesapppart2.R.id.error_message_tv) TextView error_message_tv;
-    @BindView(com.example.android.popularmoviesapppart2.R.id.linear_layout) LinearLayout linearLayout;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,12 +33,6 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(Constants.MOVIE_SORT_ORDER_KEY, Constants.MOVIE_SORT_ORDER_POPULAR).apply();
 
-        //noinspection ConstantConditions
-        if (Constants.API_KEY == null || Constants.API_KEY.isEmpty()) {
-            noApiKeyFound();
-        } else if (!networkConnection()) {
-            noNetworkFound();
-        } else {
             // Setup Fragments
             MovieListFragment movieListFragment = new MovieListFragment();
             BottomNavigationMenu bottomNavigationMenu = new BottomNavigationMenu();
@@ -56,32 +47,6 @@ public class MainActivity extends AppCompatActivity {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDarker));
-        }
+
     }
-
-
-    private void noApiKeyFound() {
-        linearLayout.setVisibility(View.GONE);
-        error_message_tv.setVisibility(View.VISIBLE);
-        error_message_tv.setText(getString(com.example.android.popularmoviesapppart2.R.string.api_key_needed));
-    }
-
-    private void noNetworkFound() {
-        linearLayout.setVisibility(View.GONE);
-        error_message_tv.setVisibility(View.VISIBLE);
-        error_message_tv.setText(getString(com.example.android.popularmoviesapppart2.R.string.no_network));
-    }
-
-    private boolean networkConnection() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(CONNECTIVITY_SERVICE);
-
-        NetworkInfo info = null;
-        if (connectivityManager != null) {
-            info = connectivityManager.getActiveNetworkInfo();
-        }
-
-        return info != null && info.isConnectedOrConnecting();
-    }
-
-
 }
