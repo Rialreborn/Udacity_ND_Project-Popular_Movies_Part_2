@@ -179,6 +179,8 @@ public class MovieDetailActivity extends AppCompatActivity
                     NetworkUtils.buildImageURL(mIntent.getImageUrl());
             Picasso.with(this)
                     .load(moviePosterUri)
+                    .placeholder(R.drawable.placeholder)
+                    .error(R.drawable.failed_load)
                     .into(movieImage);
         }
 

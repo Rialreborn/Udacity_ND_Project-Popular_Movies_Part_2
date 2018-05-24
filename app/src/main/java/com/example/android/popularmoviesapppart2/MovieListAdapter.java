@@ -21,41 +21,10 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
 
     private ArrayList<Movie> mMovieArray;
     private final OnItemClickListener mListener;
-    private OnLoadMoreListener mLoadListener;
 
-    private boolean isLoading;
-    private int visibleThreshold = 20;
-    private int lastVisibleItem, totalItemCount;
-
-
-    public MovieListAdapter(RecyclerView recyclerView, ArrayList<Movie> movieObjects, OnItemClickListener listener) {
+    public MovieListAdapter(ArrayList<Movie> movieObjects, OnItemClickListener listener) {
         this.mMovieArray = movieObjects;
         this.mListener = listener;
-        final GridLayoutManager gridLayoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                totalItemCount = gridLayoutManager.getItemCount();
-                lastVisibleItem = gridLayoutManager.findLastVisibleItemPosition();
-
-                if(!isLoading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
-                    if (mLoadListener != null) {
-                        mLoadListener.onLoadMore();
-
-                        Toast.makeText(recyclerView.getContext(),
-                                "Total Item Count: " + totalItemCount +
-                                        ". Last visible item: " + lastVisibleItem +
-                                        ". LOAD MORE DATA",
-                                Toast.LENGTH_SHORT ).show();
-                    }
-                    isLoading = true;
-                }
-
-
-
-            }
-        });
     }
 
     public void  notifyChange(ArrayList<Movie> newMovieArray) {
@@ -63,13 +32,6 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
         notifyDataSetChanged();
     }
 
-    public void setOnLoadMoreListener(OnLoadMoreListener loadListener){
-        this.mLoadListener = loadListener;
-    }
-
-    public void setLoaded() {
-        isLoading = false;
-    }
 
     @NonNull
     @Override
@@ -109,7 +71,11 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
                 mMoviePosterImage.setImageBitmap(mMovieArray.get(position).getMoviePoster());
             } else {
                 Uri image = NetworkUtils.buildImageURL(imageUrl);
-                Picasso.with(mView.getContext()).load(image).into(mMoviePosterImage);
+                Picasso.with(mView.getContext())
+                        .load(image)
+                        .placeholder(R.drawable.placeholder)
+                        .error(R.drawable.failed_load)
+                        .into(mMoviePosterImage);
             }
         }
 
@@ -122,9 +88,5 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
 
     public interface OnItemClickListener {
         void onItemClick(int position);
-    }
-
-    public interface OnLoadMoreListener {
-        void onLoadMore();
     }
 }

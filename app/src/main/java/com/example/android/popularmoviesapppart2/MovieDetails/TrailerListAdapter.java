@@ -71,7 +71,11 @@ public class TrailerListAdapter extends RecyclerView.Adapter<TrailerListAdapter.
         void bind(final int position) {
             mTrailerName.setText(mTrailersArrayList.get(position).getTrailerName());
             Uri youtubeImage = NetworkUtils.buildYoutubeThumbnailUri(mTrailersArrayList.get(position).getKey());
-            Picasso.with(mView.getContext()).load(youtubeImage).into(mThumbNail);
+            Picasso.with(mView.getContext())
+                    .load(youtubeImage)
+                    .placeholder(R.drawable.placeholder)
+                    .error(R.drawable.failed_load)
+                    .into(mThumbNail);
         }
 
         @Override

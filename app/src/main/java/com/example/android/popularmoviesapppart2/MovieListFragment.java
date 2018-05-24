@@ -219,7 +219,7 @@ public class MovieListFragment extends Fragment
 
     private void setAdapter(final ArrayList<Movie> result) {
         mMovieArrayList = result;
-        movieListAdapter = new MovieListAdapter(recyclerView, mMovieArrayList, new MovieListAdapter.OnItemClickListener() {
+        movieListAdapter = new MovieListAdapter(mMovieArrayList, new MovieListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
                 Movie movie = result.get(position);
