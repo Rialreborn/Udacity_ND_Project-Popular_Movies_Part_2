@@ -4,25 +4,19 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.design.internal.BottomNavigationItemView;
-import android.support.design.internal.BottomNavigationMenuView;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Switch;
 
 import com.example.android.popularmoviesapppart2.Database.MovieContract;
 import com.example.android.popularmoviesapppart2.MovieListFragment;
 import com.example.android.popularmoviesapppart2.R;
 import com.example.android.popularmoviesapppart2.Utils.Constants;
-
-import java.lang.reflect.Field;
 
 public class BottomNavigationMenu extends Fragment {
 
@@ -42,7 +36,7 @@ public class BottomNavigationMenu extends Fragment {
         final Menu menu = bottomNavigationView.getMenu();
 
         // Set up Pref
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String currentSortOrder = sharedPreferences.getString(Constants.MOVIE_SORT_ORDER_KEY, Constants.MOVIE_SORT_ORDER_POPULAR);
 
         int id;
@@ -73,21 +67,21 @@ public class BottomNavigationMenu extends Fragment {
                 switch (item.getItemId()) {
                     case R.id.popular_movies_menu_item:
                         menuItem = menu.getItem(0);
-                        editor.putString(Constants.MOVIE_SORT_ORDER_KEY, Constants.MOVIE_SORT_ORDER_POPULAR).apply();
+                        editor.putString(Constants.MOVIE_SORT_ORDER_KEY, Constants.MOVIE_SORT_ORDER_POPULAR);
                         replaceFragment(fragmentManager);
                         menuItem.setChecked(true);
                         break;
 
                     case R.id.highest_rated_movies_menu_item:
                         menuItem = menu.getItem(1);
-                        editor.putString(Constants.MOVIE_SORT_ORDER_KEY, Constants.MOVIE_SORT_ORDER_RATING).apply();
+                        editor.putString(Constants.MOVIE_SORT_ORDER_KEY, Constants.MOVIE_SORT_ORDER_RATING);
                         replaceFragment(fragmentManager);
                         menuItem.setChecked(true);
                         break;
 
                     case R.id.favourite_movies_menu_item:
                         menuItem = menu.getItem(2);
-                        editor.putString(Constants.MOVIE_SORT_ORDER_KEY, Constants.MOVIE_SORT_ORDER_FAVOURITES).apply();
+                        editor.putString(Constants.MOVIE_SORT_ORDER_KEY, Constants.MOVIE_SORT_ORDER_FAVOURITES);
                         replaceFragment(fragmentManager);
                         menuItem.setChecked(true);
                         break;
@@ -99,7 +93,7 @@ public class BottomNavigationMenu extends Fragment {
 
                 }
 
-
+                editor.apply();
                 return false;
             }
         });

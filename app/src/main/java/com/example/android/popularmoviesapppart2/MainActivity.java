@@ -27,11 +27,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(com.example.android.popularmoviesapppart2.R.layout.activity_main);
 
-        ButterKnife.bind(this);
+        if (savedInstanceState == null) {
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(Constants.MOVIE_SORT_ORDER_KEY, Constants.MOVIE_SORT_ORDER_POPULAR).apply();
+            ButterKnife.bind(this);
 
             // Setup Fragments
             MovieListFragment movieListFragment = new MovieListFragment();
@@ -42,11 +40,10 @@ public class MainActivity extends AppCompatActivity {
                     .add(com.example.android.popularmoviesapppart2.R.id.movie_frame_layout, movieListFragment)
                     .add(com.example.android.popularmoviesapppart2.R.id.menu_frame_layout, bottomNavigationMenu)
                     .commit();
-
+        }
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDarker));
-
     }
 }

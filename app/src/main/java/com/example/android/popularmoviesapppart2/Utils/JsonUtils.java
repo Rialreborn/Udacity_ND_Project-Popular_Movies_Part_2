@@ -18,8 +18,15 @@ import java.util.Date;
 public class JsonUtils {
 
 
-    public static ArrayList<Movie> getMovieList(String json) throws JSONException {
-        ArrayList<Movie> movieArray = new ArrayList<>();
+    public static ArrayList<Movie> getMovieList(String json, ArrayList<Movie> movieArrayList) throws JSONException {
+
+        ArrayList<Movie> movieArray;
+
+        if (movieArrayList == null) {
+            movieArray = new ArrayList<>();
+        }else {
+            movieArray = movieArrayList;
+        }
 
         JSONObject jsonObject = new JSONObject(json);
         JSONArray jsonArray = jsonObject.getJSONArray(Constants.JSON_RESULTS);

@@ -13,6 +13,8 @@ import java.util.ArrayList;
 
 public class LoadMovieData extends AsyncTask<URL, Void, ArrayList<Movie>>{
 
+    ArrayList<Movie> mMovieArrayList;
+
     public interface BeforeTaskCompleteInterface {
          void beforeTaskComplete();
     }
@@ -25,7 +27,8 @@ public class LoadMovieData extends AsyncTask<URL, Void, ArrayList<Movie>>{
     private AfterTaskCompleteInterface iAfterTaskComplete;
 
 
-    public LoadMovieData(BeforeTaskCompleteInterface beforeTaskComplete, AfterTaskCompleteInterface afterTaskComplete){
+    public LoadMovieData(ArrayList<Movie> movieArrayList, BeforeTaskCompleteInterface beforeTaskComplete, AfterTaskCompleteInterface afterTaskComplete){
+        this.mMovieArrayList = movieArrayList;
         this.iBeforeTaskComplete = beforeTaskComplete;
         this.iAfterTaskComplete = afterTaskComplete;
     }
@@ -39,15 +42,14 @@ public class LoadMovieData extends AsyncTask<URL, Void, ArrayList<Movie>>{
     @Override
     protected ArrayList<Movie> doInBackground(URL... urls) {
         URL url = urls[0];
-        ArrayList<Movie> movieArray = null;
         try {
-            movieArray = JsonUtils.getMovieList(NetworkUtils.getJsonResponseFromHttpUrl(url));
+            mMovieArrayList = JsonUtils.getMovieList(NetworkUtils.getJsonResponseFromHttpUrl(url), mMovieArrayList);
         } catch (IOException e) {
             System.out.println("FAILED TO EXTRACT JSON FROM URL: " + e);
         } catch (JSONException e) {
             System.out.println("JSON EXCEPTION: " + e);
         }
-        return movieArray;
+        return mMovieArrayList;
     }
 
     @Override

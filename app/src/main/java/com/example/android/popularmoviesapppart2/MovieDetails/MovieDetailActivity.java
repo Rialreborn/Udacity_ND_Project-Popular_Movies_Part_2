@@ -72,7 +72,7 @@ public class MovieDetailActivity extends AppCompatActivity
     ImageView ivFavourites;
 
     int movieID;
-    Intent mIntent;
+    Movie mIntent;
     boolean isFavourite;
 
     @Override
@@ -83,12 +83,12 @@ public class MovieDetailActivity extends AppCompatActivity
 
         ButterKnife.bind(MovieDetailActivity.this);
 
-        mIntent = getIntent();
+        mIntent = getIntent().getParcelableExtra(Constants.INTENT_MOVIE_OBJECT);
         if (mIntent == null) {
             closeOnNullIntent();
         }
 
-        movieID = mIntent.getIntExtra(Constants.INTENT_MOVIE_ID, 0);
+        movieID = mIntent.getMovieId();
 
         /*
          * Populate Views with mIntent data
@@ -118,7 +118,7 @@ public class MovieDetailActivity extends AppCompatActivity
         /*
          * Update Toolbar and Window
          */
-        tvMovieTitle.setText(mIntent.getStringExtra(Constants.INTENT_TITLE));
+        tvMovieTitle.setText(mIntent.getTitle());
 
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -133,11 +133,11 @@ public class MovieDetailActivity extends AppCompatActivity
 
     private void checkIfFavourite() {
         String[] projection = {MovieEntry.COLUMN_MOVIE_ID};
-        String id = String.valueOf(mIntent.getIntExtra(Constants.INTENT_MOVIE_ID, 0));
+        String id = String.valueOf(mIntent.getMovieId());
         String[] selectionArgs = {id};
 
         Cursor cursor = getContentResolver().query(
-                MovieEntry.CONTENT_URI.buildUpon().appendPath(String.valueOf(mIntent.getIntExtra(Constants.INTENT_MOVIE_ID, 0))).build(),
+                MovieEntry.CONTENT_URI.buildUpon().appendPath(String.valueOf(mIntent.getMovieId())).build(),
                 projection,
                 null,
                 selectionArgs,
@@ -161,22 +161,22 @@ public class MovieDetailActivity extends AppCompatActivity
         Populate Text Views with Data
          */
         String userRating = String.valueOf(
-                mIntent != null ? mIntent.getDoubleExtra(Constants.INTENT_USER_RATING, 0.0) : 0) + " / 10";
+                mIntent != null ? mIntent.getUserRating() : 0) + " / 10";
         userRatingTv.setText(userRating);
-        releaseDateTv.setText(mIntent.getStringExtra(Constants.INTENT_RELEASE_DATE));
-        plotTv.setText(mIntent.getStringExtra(Constants.INTENT_PLOT));
+        releaseDateTv.setText(mIntent.getReleaseDate());
+        plotTv.setText(mIntent.getPlot());
 
         /*
         Set Movie Poster
         If Bytes exist in Favourites Table, load
         Else load from web
          */
-        byte[] byteMovieImage = mIntent.getByteArrayExtra(Constants.INTENT_POSTER_BYTE);
+        byte[] byteMovieImage = mIntent.getMoviePosterByte();
         if (byteMovieImage != null) {
             movieImage.setImageBitmap(Movie.convertBytesToBitmap(byteMovieImage));
         } else {
             Uri moviePosterUri =
-                    NetworkUtils.buildImageURL(mIntent.getStringExtra(Constants.INTENT_IMAGE_URL));
+                    NetworkUtils.buildImageURL(mIntent.getImageUrl());
             Picasso.with(this)
                     .load(moviePosterUri)
                     .into(movieImage);
@@ -187,7 +187,7 @@ public class MovieDetailActivity extends AppCompatActivity
         If Bytes exist in Favourites Table, load
         Else load from web
          */
-        byte[] byteMovieBackdrop = mIntent.getByteArrayExtra(Constants.INTENT_BACKDROP_BYTE);
+        byte[] byteMovieBackdrop = mIntent.getMoviePosterByte();
         if (backdropImage == null) {
             return;
         }
@@ -195,7 +195,7 @@ public class MovieDetailActivity extends AppCompatActivity
             backdropImage.setImageBitmap(Movie.convertBytesToBitmap(byteMovieBackdrop));
         } else {
             Uri backdropImageUri =
-                    NetworkUtils.buildMovieBackdropUri(mIntent.getStringExtra(Constants.INTENT_BACKDROP_URL));
+                    NetworkUtils.buildMovieBackdropUri(mIntent.getMovieBackdropUrl());
             Picasso.with(this)
                     .load(backdropImageUri)
                     .into(backdropImage);
@@ -216,9 +216,9 @@ public class MovieDetailActivity extends AppCompatActivity
                         Intent appIntent = new Intent(Intent.ACTION_VIEW, NetworkUtils.buildYoutubeAppUri(youtubeKey));
                         Intent webIntent = new Intent(Intent.ACTION_VIEW, NetworkUtils.buildYoutubeUri(youtubeKey));
 
-                        try {
+                        if (appIntent.resolveActivity(getPackageManager()) != null) {
                             startActivity(appIntent);
-                        } catch (ActivityNotFoundException e) {
+                        } else {
                             startActivity(webIntent);
                         }
                     }
@@ -321,12 +321,12 @@ public class MovieDetailActivity extends AppCompatActivity
 
         ContentValues cv = new ContentValues();
 
-        cv.put(MovieEntry.COLUMN_TITLE, mIntent.getStringExtra(Constants.INTENT_TITLE));
-        cv.put(MovieEntry.COLUMN_PLOT, mIntent.getStringExtra(Constants.INTENT_PLOT));
+        cv.put(MovieEntry.COLUMN_TITLE, mIntent.getTitle());
+        cv.put(MovieEntry.COLUMN_PLOT, mIntent.getPlot());
         cv.put(MovieEntry.COLUMN_USER_RATING,
-                mIntent != null ? mIntent.getDoubleExtra(Constants.INTENT_USER_RATING, 0.0) : 0);
-        cv.put(MovieEntry.COLUMN_RELEASE_DATE, mIntent.getStringExtra(Constants.INTENT_RELEASE_DATE));
-        cv.put(MovieEntry.COLUMN_MOVIE_ID, mIntent.getIntExtra(Constants.INTENT_MOVIE_ID, 0));
+                mIntent != null ? mIntent.getUserRating() : 0);
+        cv.put(MovieEntry.COLUMN_RELEASE_DATE, mIntent.getReleaseDate());
+        cv.put(MovieEntry.COLUMN_MOVIE_ID, mIntent.getMovieId());
         cv.put(MovieEntry.COLUMN_POSTER_IMAGE, img);
 
 
@@ -334,7 +334,7 @@ public class MovieDetailActivity extends AppCompatActivity
     }
 
     private void deleteMovie() {
-        String movieId = String.valueOf(mIntent.getIntExtra(Constants.INTENT_MOVIE_ID, 0));
+        String movieId = String.valueOf(mIntent.getMovieId());
 
         Uri uri = MovieEntry.CONTENT_URI.buildUpon().appendPath(movieId).build();
 

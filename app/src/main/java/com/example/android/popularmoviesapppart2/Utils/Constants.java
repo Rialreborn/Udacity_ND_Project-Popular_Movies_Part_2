@@ -28,6 +28,7 @@ public class Constants {
     public static final String TRAILER_NAME = "name";
 
     // Detail Intent
+    public static final String INTENT_MOVIE_OBJECT = "object";
     public static final String INTENT_TITLE = "title";
     public static final String INTENT_IMAGE_URL = "image_url";
     public static final String INTENT_USER_RATING = "user_rating";

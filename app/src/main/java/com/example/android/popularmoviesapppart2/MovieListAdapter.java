@@ -2,11 +2,13 @@ package com.example.android.popularmoviesapppart2;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.android.popularmoviesapppart2.Model.Movie;
 import com.example.android.popularmoviesapppart2.Utils.NetworkUtils;
@@ -17,13 +19,56 @@ import java.util.ArrayList;
 
 public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.MovieHolder> {
 
-    private final ArrayList<Movie> mMovieArray;
+    private ArrayList<Movie> mMovieArray;
     private final OnItemClickListener mListener;
+    private OnLoadMoreListener mLoadListener;
+
+    private boolean isLoading;
+    private int visibleThreshold = 20;
+    private int lastVisibleItem, totalItemCount;
 
 
-    public MovieListAdapter(ArrayList<Movie> movieObjects, OnItemClickListener listener) {
-        mMovieArray = movieObjects;
-        mListener = listener;
+    public MovieListAdapter(RecyclerView recyclerView, ArrayList<Movie> movieObjects, OnItemClickListener listener) {
+        this.mMovieArray = movieObjects;
+        this.mListener = listener;
+        final GridLayoutManager gridLayoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                totalItemCount = gridLayoutManager.getItemCount();
+                lastVisibleItem = gridLayoutManager.findLastVisibleItemPosition();
+
+                if(!isLoading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
+                    if (mLoadListener != null) {
+                        mLoadListener.onLoadMore();
+
+                        Toast.makeText(recyclerView.getContext(),
+                                "Total Item Count: " + totalItemCount +
+                                        ". Last visible item: " + lastVisibleItem +
+                                        ". LOAD MORE DATA",
+                                Toast.LENGTH_SHORT ).show();
+                    }
+                    isLoading = true;
+                }
+
+
+
+            }
+        });
+    }
+
+    public void  notifyChange(ArrayList<Movie> newMovieArray) {
+        this.mMovieArray = newMovieArray;
+        notifyDataSetChanged();
+    }
+
+    public void setOnLoadMoreListener(OnLoadMoreListener loadListener){
+        this.mLoadListener = loadListener;
+    }
+
+    public void setLoaded() {
+        isLoading = false;
     }
 
     @NonNull
@@ -77,5 +122,9 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
 
     public interface OnItemClickListener {
         void onItemClick(int position);
+    }
+
+    public interface OnLoadMoreListener {
+        void onLoadMore();
     }
 }

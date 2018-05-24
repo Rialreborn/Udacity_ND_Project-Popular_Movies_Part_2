@@ -1,30 +1,32 @@
 package com.example.android.popularmoviesapppart2;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Handler;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.popularmoviesapppart2.Database.MovieContract.MovieEntry;
 import com.example.android.popularmoviesapppart2.Model.Movie;
 import com.example.android.popularmoviesapppart2.MovieDetails.MovieDetailActivity;
 import com.example.android.popularmoviesapppart2.Utils.Constants;
+import com.example.android.popularmoviesapppart2.Utils.EndlessScrollListener;
 import com.example.android.popularmoviesapppart2.Utils.LoadMovieData;
 import com.example.android.popularmoviesapppart2.Utils.NetworkUtils;
 
@@ -45,7 +47,6 @@ public class MovieListFragment extends Fragment
 {
 
 
-
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
     @BindView(R.id.progress_bar)
@@ -54,6 +55,14 @@ public class MovieListFragment extends Fragment
     TextView tvErrorMessage;
 
     private String mMovieOrder;
+    private final String INSTANT_STATE_LAYOUT = "saved_layout";
+    private final String INSTANT_STATE_MOVIE_ARRAY = "saved_array";
+    private Parcelable mSavedRecyclerLayoutState;
+    private EndlessScrollListener scrollListener;
+    GridLayoutManager mLayoutManager;
+    int page;
+    ArrayList<Movie> mMovieArrayList;
+    MovieListAdapter movieListAdapter;
 
     public MovieListFragment() {
     }
@@ -64,20 +73,20 @@ public class MovieListFragment extends Fragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final View rootView = inflater.inflate(R.layout.movie_list_fragment, container, false);
-        ButterKnife.bind(MovieListFragment.this, rootView);
-
-
-
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mMovieOrder = sharedPreferences.getString(Constants.MOVIE_SORT_ORDER_KEY, Constants.MOVIE_SORT_ORDER_POPULAR);
 
-        GridLayoutManager layoutManager = setLayoutManager(container);
-        recyclerView.setLayoutManager(layoutManager);
+
+        final View view = inflater.inflate(R.layout.movie_list_fragment, container, false);
+        ButterKnife.bind(MovieListFragment.this, view);
+
         recyclerView.setHasFixedSize(true);
+        mLayoutManager = setLayoutManager(container);
+        recyclerView.setLayoutManager(mLayoutManager);
+        page = 1;
 
         if (!mMovieOrder.equals(Constants.MOVIE_SORT_ORDER_FAVOURITES)) {
-            if (Constants.API_KEY == null || Constants.API_KEY.isEmpty()) {
+            if (Constants.API_KEY.isEmpty()) {
                 noApiKeyFound();
             } else if (!networkConnection()) {
                 noNetworkFound();
@@ -87,7 +96,48 @@ public class MovieListFragment extends Fragment
             loadFavourites();
         }
 
-        return rootView;
+        scrollListener = new EndlessScrollListener(mLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                loadMovieData();
+            }
+        };
+
+        recyclerView.addOnScrollListener(scrollListener);
+
+        return view;
+
+    }
+
+    private void loadMovieData() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(CONNECTIVITY_SERVICE);
+
+        NetworkInfo info = null;
+        if (connectivityManager != null) {
+            info = connectivityManager.getActiveNetworkInfo();
+        }
+
+        if (info != null && info.isConnectedOrConnecting()) {
+            URL url = NetworkUtils.buildMoviesUrl(mMovieOrder, mMovieArrayList);
+            new LoadMovieData(mMovieArrayList, this, this).execute(url);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelable(INSTANT_STATE_LAYOUT, recyclerView.getLayoutManager().onSaveInstanceState());
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            mSavedRecyclerLayoutState = savedInstanceState.getParcelable(INSTANT_STATE_LAYOUT);
+            recyclerView.getLayoutManager().onRestoreInstanceState(mSavedRecyclerLayoutState);
+        }
     }
 
     private void loadFavourites() {
@@ -122,30 +172,6 @@ public class MovieListFragment extends Fragment
     }
 
 
-    private void loadMovieData() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(CONNECTIVITY_SERVICE);
-
-        NetworkInfo info = null;
-        if (connectivityManager != null) {
-            info = connectivityManager.getActiveNetworkInfo();
-        }
-
-        if (info != null && info.isConnectedOrConnecting()) {
-                URL url = NetworkUtils.buildMoviesUrl(mMovieOrder);
-                new LoadMovieData(this, this).execute(url);
-        }
-    }
-
-    private void showProgressBar() {
-        recyclerView.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
-    }
-
-    private void hideProgressBar() {
-        progressBar.setVisibility(View.GONE);
-        recyclerView.setVisibility(View.VISIBLE);
-    }
-
     @SuppressWarnings("ConstantConditions")
     private GridLayoutManager setLayoutManager(ViewGroup container) {
         if (container != null) {
@@ -167,7 +193,10 @@ public class MovieListFragment extends Fragment
     //
     @Override
     public void beforeTaskComplete() {
-        showProgressBar();
+        if (recyclerView.getChildCount() < 1) {
+            recyclerView.setVisibility(View.GONE);
+        }
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -179,31 +208,28 @@ public class MovieListFragment extends Fragment
      */
     @Override
     public void afterTaskComplete(final ArrayList<Movie> result) {
-        hideProgressBar();
-        setAdapter(result);
+        recyclerView.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
+        if (result.size() <= 20) {
+            setAdapter(result);
+        } else {
+            movieListAdapter.notifyChange(result);
+        }
     }
 
     private void setAdapter(final ArrayList<Movie> result) {
-        MovieListAdapter movieListAdapter = new MovieListAdapter(result, new MovieListAdapter.OnItemClickListener() {
+        mMovieArrayList = result;
+        movieListAdapter = new MovieListAdapter(recyclerView, mMovieArrayList, new MovieListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
                 Movie movie = result.get(position);
                 Intent intent = new Intent(getContext(), MovieDetailActivity.class);
-                intent.putExtra(Constants.INTENT_TITLE, movie.getTitle())
-                        .putExtra(Constants.INTENT_IMAGE_URL, movie.getImageUrl())
-                        .putExtra(Constants.INTENT_USER_RATING, movie.getUserRating())
-                        .putExtra(Constants.INTENT_RELEASE_DATE, movie.getReleaseDate())
-                        .putExtra(Constants.INTENT_PLOT, movie.getPlot())
-                        .putExtra(Constants.INTENT_BACKDROP_URL, movie.getMovieBackdropUrl())
-                        .putExtra(Constants.INTENT_MOVIE_ID, movie.getMovieId())
-                        .putExtra(Constants.INTENT_POSTER_BYTE, movie.getMoviePosterByte())
-                        .putExtra(Constants.INTENT_BACKDROP_BYTE, movie.getMoviePosterByte())
-                ;
+                intent.putExtra(Constants.INTENT_MOVIE_OBJECT, movie);
                 startActivity(intent);
             }
         });
 
-        recyclerView.setAdapter(movieListAdapter);
+            recyclerView.setAdapter(movieListAdapter);
     }
 
     private void noNetworkFound() {
@@ -228,6 +254,7 @@ public class MovieListFragment extends Fragment
 
         return info != null && info.isConnectedOrConnecting();
     }
+
 }
 
 

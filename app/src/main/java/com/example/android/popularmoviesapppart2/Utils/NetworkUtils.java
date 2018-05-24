@@ -2,11 +2,14 @@ package com.example.android.popularmoviesapppart2.Utils;
 
 import android.net.Uri;
 
+import com.example.android.popularmoviesapppart2.Model.Movie;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 
@@ -45,11 +48,18 @@ public class NetworkUtils {
         return convertUriToUrl(builtUri);
     }
 
-    public static URL buildMoviesUrl(String movieOrder) {
+    public static URL buildMoviesUrl(String movieOrder, ArrayList<Movie> movieArrayList) {
+        int pageNumber;
+        if (movieArrayList == null || movieArrayList.isEmpty()) {
+            pageNumber = 1;
+        } else {
+         pageNumber = (movieArrayList.size() / 20) + 1;
+        }
+        String page = String.valueOf(pageNumber);
         Uri builtUri = Uri.parse(BASE_URL + movieOrder).buildUpon()
                 .appendQueryParameter(API, Constants.API_KEY)
                 .appendQueryParameter(LANGUAGE, LAN_EN_US)
-                .appendQueryParameter(PAGE, PAGE_NUMBER)
+                .appendQueryParameter(PAGE, page)
                 .build();
 
         return convertUriToUrl(builtUri);
