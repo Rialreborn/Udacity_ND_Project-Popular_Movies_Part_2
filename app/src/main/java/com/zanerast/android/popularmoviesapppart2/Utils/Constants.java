@@ -29,15 +29,6 @@ public class Constants {
 
     // Detail Intent
     public static final String INTENT_MOVIE_OBJECT = "object";
-    public static final String INTENT_TITLE = "title";
-    public static final String INTENT_IMAGE_URL = "image_url";
-    public static final String INTENT_USER_RATING = "user_rating";
-    public static final String INTENT_RELEASE_DATE = "release_date";
-    public static final String INTENT_PLOT = "plot";
-    public static final String INTENT_BACKDROP_URL = "backdrop_url";
-    public static final String INTENT_MOVIE_ID = "intent_movie_id";
-    public static final String INTENT_POSTER_BYTE = "poster_bytes";
-    public static final String INTENT_BACKDROP_BYTE = "backdrop_bytes";
 
     // Trailer
     public static final String TRAILER_TRAILER = "Trailer";
