@@ -52,17 +52,17 @@ public class TrailerListAdapter extends RecyclerView.Adapter<TrailerListAdapter.
     public class TrailerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         View mView;
         TextView mTrailerName;
-        ImageView mThumbNail;
+        ImageView mTrailerThumbNail;
         ImageView mShare;
 
         public TrailerViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
             mTrailerName = itemView.findViewById(R.id.tv_trailer_name);
-            mThumbNail = itemView.findViewById(R.id.iv_trailer_image);
+            mTrailerThumbNail = itemView.findViewById(R.id.iv_trailer_image);
             mShare = itemView.findViewById(R.id.iv_share_trailer);
 
-            mThumbNail.setOnClickListener(this);
+            mTrailerThumbNail.setOnClickListener(this);
             mShare.setOnClickListener(this);
         }
 
@@ -73,7 +73,7 @@ public class TrailerListAdapter extends RecyclerView.Adapter<TrailerListAdapter.
                     .load(youtubeImage)
                     .placeholder(R.drawable.placeholder)
                     .error(R.drawable.failed_load)
-                    .into(mThumbNail);
+                    .into(mTrailerThumbNail);
         }
 
         @Override
