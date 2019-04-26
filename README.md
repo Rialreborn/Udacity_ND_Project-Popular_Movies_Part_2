@@ -35,3 +35,7 @@ Through this project, you will:
 - Picasso
 
 For this app to function correctly an API Key is needed from TheMovieDB website, please input into the Constants class file
+
+![Alt text](movies_one.png?raw=true "Movies Image One")
+![Alt text](movies_two.png?raw=true "Movies Image Two")
+![Alt text](movies_three.png?raw=true "Movies Image Three")
